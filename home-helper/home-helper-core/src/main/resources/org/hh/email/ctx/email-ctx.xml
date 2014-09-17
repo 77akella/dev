@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean name="emailSenderBP" class="org.hh.email.bp.impl.EmailSenderBPImpl">
+		<property name="velocityEngine" ref="emailVelocityEngine" />
+		<property name="templateMessage" ref="generalTemplateMessage" />
+		<property name="mailSender" ref="mailSender" />
+	</bean>
+
+	<bean id="generalTemplateMessage" class="org.springframework.mail.SimpleMailMessage">
+		<property name="from" value="$config{default.from}" />
+		<property name="bcc" value="$config{email.bcc}" />
+	</bean>
+
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="$config{mail.host}" />
+		<property name="port" value="$config{mail.port}" />
+	</bean>
+
+   <bean id="emailVelocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+      <property name="velocityProperties">
+         <value>
+          resource.loader=class
+          class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+         </value>
+      </property>
+   </bean>
+</beans>

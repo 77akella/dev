@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:pou="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{accountController.translate('EditOutgoingNumberPoolTitle')}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form id="outgoingNumberPoolForm" styleClass="center">
+                <pou:resizable for="mainPanel" minWidth="500" handles="e,w" />
+                <pou:panel id="mainPanel" style="width: 60%">
+                    <pou:panelGrid styleClass="name" columns="2">
+                            <h:outputText value="#{accountController.translate('OutgoingNumberPool_name')}" />
+                            <pou:inputText id="name" value="#{outgoingNumberPoolController.selected.name}" required="true" />
+                    </pou:panelGrid>
+                    <pou:dataTable id="outgoingNumberPoolEnteries" value="#{outgoingNumberPoolController.selected.numbers}" var="item" rowIndexVar="ind"
+                               style="text-align: center;" emptyMessage="#{accountController.translate('no_recors')}">
+                        <pou:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('OutgoingNumberPool_number')}" />
+                            </f:facet>
+                            <pou:inputText value="#{item.number}" style="width: 95%;">
+                                <pou:ajax />
+                            </pou:inputText>
+                        </pou:column>
+                        <pou:column>
+                            <pou:commandButton actionListener="#{outgoingNumberPoolController.removeNumber(item)}" update="@parent :outgoingNumberPoolForm:outgoingNumberPoolEnteries" icon="ui-icon-trash"
+                                               immediate="true" ajax="false" title="#{accountController.translate('OutgoingNumberPool_removeEntery')}" />
+                        </pou:column>
+                    </pou:dataTable>
+                    <pou:commandButton actionListener="#{outgoingNumberPoolController.addNumber}" style="position: absolute; right: 10px;" ajax="true" update=":outgoingNumberPoolForm:outgoingNumberPoolEnteries" icon="ui-icon-plus"
+                        immediate="true" value="#{accountController.translate('OutgoingNumberPool_addEntery')}" title="#{accountController.translate('OutgoingNumberPool_addEntery')}"/>
+                <br />
+                <pou:commandButton ajax="false" action="#{outgoingNumberPoolController.update}" value="#{accountController.translate('Save')}"  />
+                <pou:commandButton ajax="false" action="#{outgoingNumberPoolController.prepareList}" value="#{accountController.translate('Cancel')}" immediate="true" />
+                </pou:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

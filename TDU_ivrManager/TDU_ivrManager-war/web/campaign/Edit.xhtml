@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pou="http://primefaces.org/ui"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{accountController.translate('EditCampaignTitle')}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form id="edit" styleClass="center">
+                <pou:resizable for="mainPanel" minWidth="800" handles="e,w" />
+                <pou:panel id="mainPanel" style="width: 80%">
+                <pou:panelGrid columns="2" styleClass="name">
+                            <h:outputLabel for="name" value="#{accountController.translate('Campaign_name')}" />
+                            <pou:inputText id="name" value="#{campaignController.selected.name}"
+                                           title="#{bundle.EditCampaignTitle_name}" required="true" />
+                            <h:outputLabel for="outEnabled" value="#{accountController.translate('Campaign_OutgoingCallsEnable')}" />
+                            <pou:selectBooleanCheckbox id="outEnabled" value="#{campaignController.selected.outgoing}" >
+                                <pou:ajax update="outgoing varMapping" listener="#{campaignController.calculateVarMapping}"/>
+                            </pou:selectBooleanCheckbox>
+                            <h:outputLabel for="inEnabled" value="#{accountController.translate('Campaign_IncomCallsEnable')}" />
+                            <pou:selectBooleanCheckbox id="inEnabled" value="#{campaignController.selected.incomming}" >
+                                <pou:ajax update="incomming varMapping" listener="#{campaignController.calculateVarMapping}"/>
+                            </pou:selectBooleanCheckbox>
+                </pou:panelGrid>
+                <pou:panel toggleable="true" id="outgoing" toggleSpeed="100" collapsed="#{!campaignController.selected.outgoing}" widgetVar="outCalls" toggleTitle="#{accountController.translate('Toggle')}" >
+                    <f:facet name="header" >
+                        <pou:commandLink onclick="outCalls.toggle()" value="#{accountController.translate('Campaign_OutgoingActions')}" />&nbsp;
+                    </f:facet>
+                    <center>
+                        <pou:panelGrid columns="2">
+                            <h:outputLabel for="maxCalls" value="#{accountController.translate('Campaign_OutgoingMaxCalls')}"/>
+                            <pou:spinner id="maxCalls" value="#{campaignController.selected.maxCalls}" min="0" disabled="#{!campaignController.selected.outgoing}" />
+                            <h:outputLabel for="fromDate" value="#{accountController.translate('Campaign_OutgoingFromDate')}"/>
+                            <pou:calendar id="fromDate" value="#{campaignController.selected.fromDate}" disabled="#{!campaignController.selected.outgoing}" pattern="yyyy.MM.dd HH:mm" />
+                            <h:outputLabel for="toDate" value="#{accountController.translate('Campaign_OutgoingToDate')}"/>
+                            <pou:calendar id="toDate" value="#{campaignController.selected.toDate}" disabled="#{!campaignController.selected.outgoing}" readOnlyInputText="true" pattern="yyyy.MM.dd HH:mm" />
+                            <h:outputLabel for="callAlg" value="#{accountController.translate('Campaign_OutgoingAlgorithm')}" />
+                            <pou:commandButton id="callAlg" style="width: 200px;" type="button" onclick="manageAction.show()" value="#{accountController.translate('Campaign_OutgoingAlgorithmManage')}" disabled="#{!campaignController.selected.outgoing}" />
+                            <h:outputLabel for="dialRule" value="#{accountController.translate('Campaign_Select_DialRule')}"/>
+                            <pou:selectOneMenu id="dialRule" style="width: 200px;" value="#{campaignController.selected.dialRule}" converter="dialRuleConverter"
+                                            disabled="#{!campaignController.selected.outgoing}">
+                                <f:selectItem itemLabel="#{accountController.translate('None')}" itemValue="#{null}" />
+                                <f:selectItems value="#{dialRuleController.itemsAvailableSelect}" />
+                                <pou:ajax />
+                            </pou:selectOneMenu>
+                            <h:outputLabel for="conLists" value="#{accountController.translate('Campaign_Select_ContactLists')}"/>
+                            <pou:selectOneMenu id="conLists" style="width: 200px;" value="#{campaignController.selected.contactList}"
+                                                converter="contactListConverter" disabled="#{!campaignController.selected.outgoing}">
+                                <f:selectItem itemLabel="#{accountController.translate('None')}" itemValue="#{null}" />
+                                <f:selectItems value="#{contactListController.itemsAvailableSelect}" />
+                                <pou:ajax listener="#{campaignController.calculateVarMapping}" update="varMapping"/>
+                            </pou:selectOneMenu>
+                        </pou:panelGrid>
+                        <pou:dataTable id="varMapping" value="#{campaignController.selected.campVarMaps}" var="varMapRow"
+                                    transient="true" emptyMessage="#{accountController.translate('no_recors')}">
+                            <pou:column headerText="#{accountController.translate('Campaign_Variable')}">
+                                <h:outputText value="#{varMapRow.var.name}" />
+                            </pou:column>
+                            <pou:column headerText="#{accountController.translate('Campaign_MapTo')}" >
+                                <pou:selectOneListbox value="#{varMapRow.conListColumn}" style="margin: 0; width: 98%;" disabled="#{!campaignController.selected.outgoing}">
+                                    <f:selectItems value="#{campaignController.itemsContactListNames(varMapRow.contactList.columnNames)}" var="cc" itemValue="#{cc.value}" />
+                                    <pou:ajax />
+                                </pou:selectOneListbox>
+                            </pou:column>
+                        </pou:dataTable>
+                    </center>
+                </pou:panel>
+
+                <pou:panel toggleable="true" id="incomming" toggleSpeed="100"
+                           collapsed="#{!campaignController.selected.incomming}" widgetVar="inCalls" >
+                    <f:facet name="header" >
+                        <pou:commandLink onclick="inCalls.toggle()" value="#{accountController.translate('Campaign_IncomActions')}" />
+                    </f:facet>
+                    <center>
+                        <pou:panelGrid columns="2">
+                            <h:outputLabel for="inNumbers" value="#{accountController.translate('Campaign_IncomNumbers')}" />
+                            <pou:panelGrid columns="2" id="inNumbers" styleClass="attributeName" >
+                                <pou:inputText value="#{campaignController.incomNumber}" disabled="#{!campaignController.selected.incomming}">
+                                    <pou:ajax event="keyup" update="addIncNumber" />
+                                </pou:inputText>
+                                <pou:commandButton id="addIncNumber" action="#{campaignController.addNumber}"
+                                    value="#{accountController.translate('Campaign_IncomNumbersAdd')}" disabled="#{!campaignController.selected.incomming or !campaignController.canAddNumber()}"
+                                    update="inNumbers" immediate="true"/>
+                                <pou:selectOneListbox value="#{campaignController.incomNumber}" style="height: 5em; width: 100%;">
+                                    <f:selectItems value="#{campaignController.selected.incommingNumbers}" var="in" itemLabel="#{in.number}" itemValue="#{in.number}" />
+                                    <pou:ajax update="inNumbers"/>
+                                </pou:selectOneListbox>
+                                <pou:commandButton id="removeIncNumber" action="#{campaignController.removeNumber}"
+                                                value="#{accountController.translate('Campaign_IncomNumbersRemove')}" disabled="#{!campaignController.selected.incomming or !campaignController.canRemoveNumber()}"
+                                                update="inNumbers" immediate="true"/>
+                            </pou:panelGrid>
+                            <h:outputLabel for="inCallFlow" value="#{accountController.translate('Campaign_IncomCallFlow')}" />
+                            <pou:selectOneMenu id="inCallFlow" style="width: 200px;" value="#{campaignController.selected.incommingCallFlow}" converter="callFlowConverter"
+                                            disabled="#{!campaignController.selected.incomming}" required="true">
+                                <f:selectItem itemLabel="#{accountController.translate('None')}" itemValue="#{null}" />
+                                <f:selectItems value="#{callFlowController.itemsAvailableSelect}"/>
+                                <pou:ajax update="inNumbers varMapping" listener="#{campaignController.calculateVarMapping}" rendered="false" />
+                            </pou:selectOneMenu>
+                        </pou:panelGrid>
+                    </center>
+                </pou:panel>
+                <br />
+                <pou:commandButton ajax="false" action="#{campaignController.update}" value="#{accountController.translate('Save')}"  />
+                <pou:commandButton ajax="false" action="#{campaignController.prepareList}" value="#{accountController.translate('Cancel')}" immediate="true" />
+                </pou:panel>
+            </h:form>
+        </ui:define>
+        <ui:define name="notLayout">
+            <pou:dialog widgetVar="manageAction" header="#{accountController.translate('Campaign_OutgoingAlgorithm')}" modal="true">
+                <h:form id="action" >
+                <pou:panelGrid  style="width: 100%;">
+                            <pou:row>
+                                <pou:column style="vertical-align: top;">
+                                    <pou:tree id="actionTree" value="#{campaignController.root}" var="node"
+                                                        selectionMode="single" selection="#{campaignController.selectedNode}"
+                                                        dynamic="true" cache="false" style="min-height: 300px; width: 98%;">
+                                        <pou:ajax event="select" update=":action:attributes" />
+                                        <pou:treeNode>
+                                            <h:outputText value="#{campaignController.getNodeName(node)} [#{accountController.translate(campaignController.getNodeType(node))}]" />
+                                        </pou:treeNode>
+                                    </pou:tree>
+                                </pou:column>
+                                <pou:column style="width: 450px; vertical-align: top;">
+                                    <pou:panel id="attributes">
+                                        <pou:commandButton action="#{campaignController.addAction}" disabled="#{!campaignController.selectedNode.leaf}"
+                                                            value="#{accountController.translate('Campaign_ActionCreate')}" rendered="#{!campaignController.isActionNode()}" update=":action" immediate="true" />
+                                        <pou:commandLink action="#{campaignController.removeAction}" update=":action" immediate="true"
+                                                        disabled="#{campaignController.removeActionDesibled}" value="#{accountController.translate('Campaign_ActionRemove')}" rendered="#{campaignController.isActionNode()}" />
+                                        <pou:panelGrid columns="2" rendered="#{campaignController.isActionNode()}" style="width: 100%;">
+                                            <h:outputLabel for="actionType" value="#{accountController.translate('Campaign_ActionType')}" />
+                                            <pou:selectOneButton id="actionType" value="#{campaignController.selectedNodeType}" >
+                                                <f:selectItem itemLabel="#{accountController.translate('Campaign_ActionType_noAction')}" itemValue="noAction" />
+                                                <f:selectItem itemLabel="#{accountController.translate('Campaign_ActionType_call')}" itemValue="call" />
+                                                <f:selectItem itemLabel="#{accountController.translate('Campaign_ActionType_email')}" itemValue="email" />
+                                                <pou:ajax update=":action:actionTree :action:attributes" />
+                                            </pou:selectOneButton>
+                                        </pou:panelGrid>
+                                        <pou:panelGrid columns="2" rendered="#{campaignController.isActionNode()}" style="width: 100%;">
+                                            <h:outputLabel for="actionDelay" value="#{accountController.translate('Campaign_ActionDelayInMin')}" rendered="#{!campaignController.removeActionDesibled}"/>
+                                            <pou:spinner id="actionDelay" value="#{campaignController.selectedNode.data.timeOffset}" rendered="#{!campaignController.removeActionDesibled}">
+                                                <pou:ajax />
+                                            </pou:spinner>
+                                        </pou:panelGrid>
+                                        <pou:panelGrid columns="2" rendered="#{campaignController.isCallActionNode()}" style="width: 100%;">
+                                            <h:outputLabel for="phoneAlias" value="#{accountController.translate('Campaign_Action_name')}" />
+                                            <pou:inputText style="width: 150px;" id="phoneAlias" value="#{campaignController.selectedNode.data.name}" maxlength="20" >
+                                                <pou:ajax update=":action:actionTree"/>
+                                            </pou:inputText>
+
+                                            <h:outputLabel for="useCCA" value="#{accountController.translate('Campaign_Action_useCCA')}" />
+                                            <pou:selectOneButton id="useCCA" value="#{campaignController.selectedNode.data.useCCA}">
+                                                <pou:ajax update=":action:attributes"  />
+                                                <f:selectItem itemLabel="#{accountController.translate('Yes')}" itemValue="${true}" />
+                                                <f:selectItem itemLabel="#{accountController.translate('No')}" itemValue="${false}" />
+                                            </pou:selectOneButton>
+
+                                            <h:outputLabel for="outgoingNumberPool" value="#{accountController.translate('Campaign_Action_outgoingNumberPool')}" />
+                                            <pou:selectOneMenu style="width: 150px;" id="outgoingNumberPool" value="#{campaignController.selectedNode.data.outgoingNumberPool}" converter="outgoingNumberPoolConverter">
+                                                <f:selectItem value="#{null}"  itemLabel="#{accountController.translate('DoNotUse')}" />
+                                                <f:selectItems value="#{outgoingNumberPoolController.itemsAvailableSelect}" />
+                                                <pou:ajax update="outgoingNumber"/>
+                                            </pou:selectOneMenu>
+
+                                            <h:outputLabel for="outgoingNumber" value="#{accountController.translate('Campaign_Action_outgoingNumber')}" />
+                                            <pou:selectOneMenu style="width: 150px;" id="outgoingNumber" value="#{campaignController.selectedNode.data.outgoingNumber}"
+                                                                disabled="#{campaignController.selectedNode.data.outgoingNumberPool==null}">
+                                                <f:selectItem itemValue="#{null}" itemLabel="#{accountController.translate('Random')}" />
+                                                <f:selectItems value="#{campaignController.selectedNode.data.outgoingNumberPool.numbers}" var="numb" itemValue="#{numb.number}" itemLabel="#{numb.number}" />
+                                                <pou:ajax />
+                                            </pou:selectOneMenu>
+
+                                            <h:outputLabel for="timeoutPanel" value="#{accountController.translate('Campaign_Action_timeout')}" />
+                                            <pou:outputPanel style="width: 100%" id="timeoutPanel">
+                                                <pou:inputText style="width: 150px;" id="timeout" value="#{campaignController.selectedNode.data.timeout}" >
+                                                    <pou:ajax />
+                                                </pou:inputText>
+                                            </pou:outputPanel>
+
+                                            <h:outputLabel for="answerCallFlow" value="#{accountController.translate('Campaign_Action_answerCallFlow')}" />
+                                            <pou:outputPanel id="answerCallFlow" style="padding: 0; margin: 0;">
+                                                <pou:selectOneMenu style="width: 150px;" value="#{campaignController.selectedNode.data.humanCallFlow}"
+                                                                   converter="callFlowConverter">
+                                                    <f:selectItem itemLabel="#{accountController.translate('None')}" itemValue="#{null}" />
+                                                    <f:selectItems value="#{callFlowController.itemsAvailableSelect}"/>
+                                                    <pou:ajax />
+                                                </pou:selectOneMenu>
+                                            </pou:outputPanel>
+
+                                            <h:outputLabel for="machineCallFlow" value="#{accountController.translate('Campaign_machineCallFlow')}" />
+                                            <pou:outputPanel id="machineCallFlow" style="padding: 0; margin: 0;">
+                                                <pou:selectOneMenu style="width: 150px;" value="#{campaignController.selectedNode.data.machineCallFlow}"
+                                                                   disabled="#{!campaignController.selectedNode.data.useCCA}"
+                                                                   converter="callFlowConverter">
+                                                    <f:selectItem itemLabel="#{accountController.translate('None')}" itemValue="#{null}" />
+                                                    <f:selectItems value="#{callFlowController.itemsAvailableSelect}"/>
+                                                    <pou:ajax />
+                                                </pou:selectOneMenu>
+                                            </pou:outputPanel>
+
+                                            <h:outputLabel for="faxCallFlow" value="#{accountController.translate('Campaign_faxCallFlow')}" />
+                                            <pou:outputPanel id="faxCallFlow" style="padding: 0; margin: 0;">
+                                                <pou:selectOneMenu style="width: 150px;" value="#{campaignController.selectedNode.data.faxCallFlow}"
+                                                                   disabled="#{!campaignController.selectedNode.data.useCCA}"
+                                                                   converter="callFlowConverter">
+                                                    <f:selectItem itemLabel="#{accountController.translate('None')}" itemValue="#{null}" />
+                                                    <f:selectItems value="#{callFlowController.itemsAvailableSelect}"/>
+                                                    <pou:ajax />
+                                                </pou:selectOneMenu>
+                                            </pou:outputPanel>
+                                        </pou:panelGrid>
+                                        <pou:panelGrid columns="2" rendered="#{campaignController.isMailActionNode()}" style="width: 100%;">
+                                            <h:outputLabel for="mailAlias" value="#{accountController.translate('Campaign_Action_name')}" />
+                                            <pou:inputText style="width: 150px;" id="mailAlias" value="#{campaignController.selectedNode.data.name}" maxlength="20" >
+                                                <pou:ajax update=":action:actionTree"/>
+                                            </pou:inputText>
+
+                                            <h:outputLabel for="mailTemplate" value="#{accountController.translate('Campaign_mailTemplate')}" />
+                                            <pou:outputPanel id="mailTemplate" style="padding: 0; margin: 0;">
+                                                <pou:selectOneMenu style="width: 150px;" value="#{campaignController.selectedNode.data.emailMessageTemplate}"
+                                                                   converter="emailTemplateConverter">
+                                                    <f:selectItem itemLabel="#{accountController.translate('None')}" itemValue="#{null}" />
+                                                    <f:selectItems value="#{emailTemplateController.itemsAvailableSelect}" />
+                                                    <pou:ajax />
+                                                </pou:selectOneMenu>
+                                            </pou:outputPanel>
+                                        </pou:panelGrid>
+                                    </pou:panel>
+                                </pou:column>
+                             </pou:row>
+                    </pou:panelGrid>
+                    <pou:commandButton value="#{accountController.translate('Save')}" update=":edit:varMapping" oncomplete="manageAction.hide();"
+                                       actionListener="#{campaignController.calculateVarMapping}" immediate="true"/>
+                </h:form>
+                <pou:ajax event="close" update=":edit:varMapping" listener="#{campaignController.calculateVarMapping}"/>
+            </pou:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

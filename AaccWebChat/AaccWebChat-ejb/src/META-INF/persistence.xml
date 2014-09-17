@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+
+    <persistence-unit name="WebChat-ejbPU" transaction-type="JTA">
+        <!--<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>-->
+        <!--&lt;!&ndash;<jta-data-source>jdbc/__default</jta-data-source>&ndash;&gt;-->
+        <!--<jta-data-source>java:jboss/ds/wc_derby</jta-data-source>-->
+        <!--&lt;!&ndash;<class>ua.com.aacc.webChatbChat.entity.AaccAgent</class>&ndash;&gt;-->
+        <!--<class>ua.com.aacc.webChatbChat.entity.Administrator/class>-->
+        <!--<class>ua.com.aacc.webChatbChat.entity.Business</class>-->
+        <!--&lt;!&ndash;<class>ua.com.aacc.webChatbChat.entity.ChatMessage</class>&ndash;&gt;-->
+        <!--&lt;!&ndash;<class>ua.com.aacc.webChatbChat.entity.ChatSession</class>&ndash;&gt;-->
+        <!--<class>ua.com.aacc.webChatbChat.entity.Customer</class>-->
+        <!--<exclude-unlisted-classes>true</exclude-unlisted-classes>-->
+        <!--<properties>-->
+        <!--&lt;!&ndash;<property name="eclipselink.logging.level" value="FINE"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;<property name="eclipselink.logging.parameters" value="true"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;<property name="eclipselink.logging.logger" value="ua.com.util.Slf4JEclipseLinkSessionLogger"/>&ndash;&gt;-->
+        <!--<property name="eclipselink.ddl-generation" value="create-tables"/>-->
+        <!--<property name="eclipselink.target-database" value="Derby"/>-->
+        <!--<property name="eclipselink.ddl-generation.output-mode" value="both"/>-->
+        <!--</properties>-->
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <jta-data-source>java:jboss/datasources/webChatDS</jta-data-source>
+        <properties>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <!--<property name="hibernate.default_schema" value="AACC_WEBCHAT"/>-->
+            <!--<property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>-->
+            <!--<property name="hibernate.connection.defaultNChar" value="true"/>-->
+            <!--<property name="hibernate.connection.characterEncoding" value="UTF-8" />-->
+            <!--<property name="hibernate.connection.useUnicode" value="true"  />-->
+            <!--<property name="hibernate.connection.charSet" value="UTF-8"/>-->
+
+            <!--<property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.jbc2.JBossCacheRegionFactory" />-->
+        </properties>
+    </persistence-unit>
+
+</persistence>

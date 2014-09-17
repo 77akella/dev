@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pou="http://primefaces.org/ui">
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{accountController.translate('EditCallFlowTitle')}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form id="constructor" styleClass="center">
+                <pou:resizable for="mainPanel" minWidth="800" handles="e,w" />
+                <pou:panel id="mainPanel" style="width: 80%">
+                    <pou:panelGrid columns="2" styleClass="name">
+                        <h:outputLabel value="#{accountController.translate('CallFlow_name')} " for="scName" />
+                        <pou:inputText id="scName" value="#{callFlowController.selected.name}" required="true"/>
+                    </pou:panelGrid>
+                    <br />
+                    <pou:panelGrid styleClass="name" style="width: 100%">
+                        <pou:row>
+                                <pou:column colspan="2" style="border: none;">
+                                    <pou:panel style="border: none;">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{accountController.translate('CallFlow_Available_nodes')}" />
+                                        </f:facet>
+                                        <pou:dataGrid id="availNodes" styleClass="availNodesTable"
+                                                    value="#{callFlowController.selectedNode.data.childTypes}"
+                                                    var="childTag" emptyMessage="#{accountController.translate('no_recors')}" columns="7">
+                                            <pou:column>
+                                            <pou:panel style="height: 20px; min-width: 120px;" styleClass="ui-button ui-state-default
+                                                    ui-corner-all ui-button-text-icon-left" >
+                                                <h:outputText class="ui-button-icon-left ui-icon
+                                                            #{callFlowController.getIcon(childTag)}" />
+                                                <h:outputText value="#{accountController.translate(childTag)}"
+                                                            style="padding: 0em 0em 0em 1em ; margin: 0;" class="ui-button-text"/>
+                                                <pou:draggable revert="true" zindex="1003" containment=":constructor:mainPanel" helper="clone"/>
+                                            </pou:panel>
+                                        </pou:column>
+                                        </pou:dataGrid>
+                                    </pou:panel>
+                                </pou:column>
+                        </pou:row>
+                        <pou:row >
+                            <pou:column resizable="true" style="vertical-align: top; min-width: 70%;">
+                                <pou:contextMenu for="tree">
+                                    <pou:menuitem rendered="false" value="#{accountController.translate('Copy')}" update=":main:messages :constructor:availNodes :constructor:attributes"
+                                                  disabled="true"    actionListener="#{callFlowController.copyNode}" icon="ui-icon-search" immediate="true"/>
+                                    <pou:menuitem rendered="false" value="#{accountController.translate('Paste')}"  update=":main:messages :constructor:availNodes :constructor:attributes tree"
+                                                  disabled="true" actionListener="#{callFlowController.pasteNode}" icon="ui-icon-search"  immediate="true"/>
+
+                                    <pou:menuitem value="#{accountController.translate('Delete')}" update=":main:messages :constructor:availNodes :constructor:attributes tree"
+                                                  actionListener="#{callFlowController.deleteNode}" icon="ui-icon-close" immediate="true"/>
+                                </pou:contextMenu>
+                                <pou:tree id="tree" value="#{callFlowController.root}" var="node"
+                                            selectionMode="single" selection="#{callFlowController.selectedNode}"
+                                            dynamic="true" cache="false" style="min-height: 300px; border: none; width: 99%">
+
+                                    <pou:ajax event="select" update=":constructor:availNodes :constructor:attributes tree" />
+                                    <pou:treeNode icon="#{callFlowController.getIcon(node.getType())}">
+                                        <h:outputText value="#{callFlowController.getName(node)} [#{accountController.translate(node.type)}]"
+                                                                rendered="#{!callFlowController.isEmptyRendered(node.type)}" />
+                                                <pou:outputPanel rendered="#{callFlowController.isEmptyRendered(node.type)}"
+                                                                    style="border:#FF9900; width:150px; height:36px;"
+                                                                    styleClass="div.ui-state-hover">
+                                                    <pou:droppable  tolerance="intersect" datasource=":constructor:availNodes"
+                                                                    activeStyleClass="ui-state-highlight">
+                                                        <pou:ajax listener="#{callFlowController.onNodeDrop}"
+                                                                    update=":constructor:availNodes :constructor:attributes tree" />
+                                                    </pou:droppable>
+                                                </pou:outputPanel>
+                                            </pou:treeNode>
+                                </pou:tree>
+                            </pou:column>
+                            <pou:column style="vertical-align: top; width: 350px; padding: 4px;" rendered="#{callFlowController.selectedNode!=null}">
+                                <pou:panel id="attributes" style="border: none;">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{accountController.translate(callFlowController.selectedNode.data.type)}" />
+                                    </f:facet>
+                                    <pou:panelGrid columns="2" rendered="#{!callFlowController.selectedNode.data.vars.isEmpty()}" styleClass="attributeName">
+                                        <h:outputLabel for="name" value="#{accountController.translate('CallFlow_node_name')}" />
+                                        <pou:inputText id="name" value="#{callFlowController.selectedNode.data.name}">
+                                            <pou:ajax event="keyup" />
+                                        </pou:inputText>
+                                    </pou:panelGrid>
+                                        <pou:dataTable  value="#{callFlowController.selectedNode.data.attributes}"
+                                                        var="attr" rowKey="#{attr.name}" emptyMessage="#{accountController.translate('CallFlow_NoAttributes')}">
+                                            <pou:ajax event="rowSelect" update=":constructor:attributes" />
+                                            <pou:column>
+                                                <h:outputText value="#{accountController.translate(attr.name)}" />
+                                            </pou:column>
+                                            <pou:column style="padding: 1px; margin: 0px; text-align: left; vertical-align: central; width: 200px;">
+                                                <pou:spinner value="#{attr.val}" rendered="#{callFlowController.isAttrTimeoutRendered(attr.type)}" min="0" max="600" stepFactor="5">
+                                                    <pou:ajax event="keyup" />
+                                                </pou:spinner>
+                                                <pou:selectOneMenu value="#{attr.val}"
+                                                                    rendered="#{callFlowController.isAttrCountRendered(attr.type)}" required="true">
+                                                    <f:selectItem itemLabel="#{accountController.translate('None')}" itemValue="0" />
+                                                    <f:selectItem itemLabel="1" itemValue="1" />
+                                                    <f:selectItem itemLabel="3" itemValue="3" />
+                                                    <f:selectItem itemLabel="5" itemValue="5" />
+                                                    <f:selectItem itemLabel="9" itemValue="9" />
+                                                    <f:selectItem itemLabel="20" itemValue="20" />
+                                                    <pou:ajax />
+                                                </pou:selectOneMenu>
+                                                <pou:inputText value="#{attr.val}" rendered="#{callFlowController.isAttrTextRendered(attr.type)}">
+                                                    <pou:ajax event="keyup" />
+                                                </pou:inputText>
+                                                <pou:selectOneMenu value="#{attr.val}"
+                                                                    rendered="#{callFlowController.isAttrGotoRendered(attr.type)}" required="true">
+                                                    <f:selectItem itemLabel="#{accountController.translate('Select')}" itemValue="#{null}" />
+                                                    <f:selectItems value="#{callFlowController.selectItemsGoto}" var="goto" />
+                                                    <pou:ajax />
+                                                </pou:selectOneMenu>
+                                                <pou:selectOneButton value="#{attr.val}" style="width: 90px; display: block;" styleClass="dtmfPad"
+                                                                    rendered="#{callFlowController.isAttrDtmfRendered(attr.type)}" required="true">
+                                                    <f:selectItem itemLabel="1" itemValue="1" />
+                                                    <f:selectItem itemLabel="2" itemValue="2" />
+                                                    <f:selectItem itemLabel="3" itemValue="3" />
+                                                    <f:selectItem itemLabel="4" itemValue="4" />
+                                                    <f:selectItem itemLabel="5" itemValue="5" />
+                                                    <f:selectItem itemLabel="6" itemValue="6" />
+                                                    <f:selectItem itemLabel="7" itemValue="7" />
+                                                    <f:selectItem itemLabel="8" itemValue="8" />
+                                                    <f:selectItem itemLabel="9" itemValue="9" />
+                                                    <f:selectItem itemLabel="*" itemValue="*" />
+                                                    <f:selectItem itemLabel="0" itemValue="0" />
+                                                    <f:selectItem itemLabel="#" itemValue="#" />
+                                                    <pou:ajax />
+                                                </pou:selectOneButton>
+                                                <!-- WrapUp Code -->
+                                                <pou:selectOneMenu value="#{attr.val}" styleClass="selectOrAdd"
+                                                                    rendered="#{callFlowController.isAttrWrapUpCodeRendered(attr.type)}" required="true">
+                                                    <f:selectItem itemLabel="#{accountController.translate('Select')}" itemValue="#{null}" />
+                                                    <f:selectItems value="#{wrapUpCodeController.itemsAvailableSelect}"/>
+                                                    <pou:ajax update=":constructor:attributes"/>
+                                                </pou:selectOneMenu>
+                                                <pou:commandButton actionListener="#{wrapUpCodeController.prepareCreate}"
+                                                                   icon="ui-icon-plus" oncomplete="editWrapUp.show()" update=":editWrapUpForm"
+                                                                   rendered="#{callFlowController.isAttrWrapUpCodeRendered(attr.type)}"
+                                                                   title="#{accountController.translate('Create')}"/>
+
+                                                <!-- Audio attribute -->
+                                                <pou:spacer rendered="#{(attr.val!=null and !attr.val.isEmpty()) and callFlowController.isAttrAudioRendered(attr.type)}" styleClass="audioRow">
+                                                    <audio controls="controls" src="#{facesContext.externalContext.requestContextPath}/Audio?id=#{attr.val}" style="display: block; float: left; height: 40px; border: none; width: 150px; margin-right: 5px;"/>
+                                                    <pou:commandButton icon="ui-icon-trash" style="height: 40px; width: 40px; display: block;"
+                                                            actionListener="#{attr.setVal('')}" update=":constructor:attributes :main:messages" immediate="true"/>
+                                                </pou:spacer>
+                                                <pou:selectOneMenu rendered="#{(attr.val==null or attr.val.isEmpty()) and callFlowController.isAttrAudioRowRendered(attr)}"
+                                                                   value="#{attr.val}" styleClass="selectOrAdd"  >
+                                                    <f:selectItem itemLabel="#{accountController.translate('Select')}" itemValue="#{null}" />
+                                                    <f:selectItems value="#{audioFileController.itemsAvailableSelect}" var="file" />
+                                                    <pou:ajax update=":constructor:attributes" listener="#{callFlowController.onAudioChange}" />
+                                                </pou:selectOneMenu>
+                                                <pou:commandButton actionListener="#{audioFileController.prepareCreate}" rendered="#{(attr.val==null or attr.val.isEmpty()) and callFlowController.isAttrAudioRowRendered(attr)}"
+                                                                   style="display: block;" oncomplete="editFile.show()" update=":editFileForm" icon="ui-icon-plus" title="#{accountController.translate('CallFlow_uploadAudio')}" />
+                                                <pou:selectOneMenu value="#{attr.val}" rendered="#{callFlowController.isAttrBundleLanguageRendered(attr.type)}" required="true">
+                                                    <f:selectItems value="#{callFlowController.selectItemsBundleLanguage}"/>
+                                                    <pou:ajax update=":constructor:attributes" />
+                                                </pou:selectOneMenu>
+                                                <pou:selectOneMenu value="#{attr.val}" rendered="#{callFlowController.isAttrBundleMoneyType(attr.type)}" required="true">
+                                                    <f:selectItems value="#{callFlowController.selectItemsBundleMoneyType}" />
+                                                    <pou:ajax />
+                                                </pou:selectOneMenu>
+                                            </pou:column>
+                                            <pou:column style="margin: 0; padding: 0;" rendered="false">
+                                                <pou:commandButton icon="ui-icon-info" type="button" id="help#{attr.name}" rendered="#{attr.name!=null}" />
+                                                <pou:overlayPanel for="help#{attr.id}" rendered="#{attr.name!=null}">
+                                                    <h:outputText value="#{callFlowController.tanslateHelp(attr)}" rendered="#{attr.name!=null}"/>
+                                                </pou:overlayPanel>
+                                            </pou:column>
+                                        </pou:dataTable>
+                                </pou:panel>
+                            </pou:column>
+                        </pou:row>
+                </pou:panelGrid>
+                <br />
+                <pou:commandButton ajax="false" action="#{callFlowController.update}" value="#{accountController.translate('Save')}"/>
+                <pou:commandButton ajax="false" action="#{callFlowController.prepareList}" value="#{accountController.translate('Cancel')}" immediate="true" />
+                </pou:panel>
+            </h:form>
+        </ui:define>
+        <ui:define name="notLayout">
+            <pou:dialog modal="true" header="#{accountController.translate('AudioFile_boxHeader')}" widgetVar="editFile" resizable="false">
+                <h:form id="editFileForm">
+                    <pou:message for="createFileButton" showDetail="true" />
+                    <h:panelGrid columns="2" rendered="#{audioFileController.selected!=null}">
+                        <h:outputText value="#{accountController.translate('AudioFile_upload')}" />
+                        <h:form enctype="multipart/form-data">
+                            <pou:fileUpload
+                                    mode="advanced" auto="true"
+                                    fileUploadListener="#{audioFileController.handleAudioUpload}"
+                                    allowTypes="/(\.|\/)(wav|mp3|flac)$/"
+                                    update=":editFileForm :main:messages" label=""  />
+                        </h:form>
+
+                        <h:outputText value="#{accountController.translate('AudioFile_name')}" rendered="#{audioFileController.selected.id!=null}"/>
+                        <pou:inputText value="#{audioFileController.selected.name}" required="true" rendered="#{audioFileController.selected.id!=null}"/>
+
+                        <h:outputText value="#{accountController.translate('AudioFile_data')}" rendered="#{audioFileController.selected.id!=null}" />
+                        <h:panelGrid columns="1" rendered="#{audioFileController.selected.contentType.startsWith('audio') and audioFileController.selected.id!=null}">
+                            <audio controls="controls" src="../File?id=#{audioFileController.selected.id}" />
+                        </h:panelGrid>
+
+                        <h:outputText value="" />
+                        <pou:commandButton id="createFileButton" actionListener="#{audioFileController.update}" oncomplete="editFile.hide()"
+                                           update=":editFileForm" value="#{accountController.translate('Create')}" />
+                    </h:panelGrid>
+                </h:form>
+                <pou:ajax event="close" update=":constructor:attributes" />
+            </pou:dialog>
+            <pou:dialog modal="true" header="#{accountController.translate('WrapUp_boxHeader')}" resizable="false" widgetVar="editWrapUp">
+                <h:form id="editWrapUpForm">
+                    <h:panelGrid columns="2" rendered="#{wrapUpCodeController.selected!=null}">
+                        <h:outputText value="#{accountController.translate('WrapUp_name')}" />
+                        <pou:inputText value="#{wrapUpCodeController.selected.name}" required="true"/>
+
+                        <h:outputText value="#{accountController.translate('WrapUp_desc')}" />
+                        <pou:inputTextarea value="#{wrapUpCodeController.selected.description}"/>
+
+                        <h:outputText value="" />
+                        <pou:commandButton actionListener="#{wrapUpCodeController.update}" oncomplete="editWrapUp.hide()"
+                                           update=":editWrapUpForm" value="#{accountController.translate('Create')}" />
+                    </h:panelGrid>
+                </h:form>
+                <pou:ajax event="close" update=":constructor:attributes" />
+            </pou:dialog>
+        </ui:define>
+    </ui:composition>
+
+</html>

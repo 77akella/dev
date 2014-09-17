@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pou="http://primefaces.org/ui">
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{accountController.translate('EditContactListTitle')}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form id="contactForm" styleClass="center">
+                <pou:resizable for="mainPanel" minWidth="500" handles="e,w" />
+                <pou:panel id="mainPanel" style="width: 80%">
+                    <pou:panelGrid styleClass="name">
+                        <pou:row>
+                            <pou:column>
+                                <h:outputText value="#{accountController.translate('ContactList_name')}" />
+                            </pou:column>
+                            <pou:column>
+                                <pou:inputText id="name" value="#{contactListController.selected.name}" required="true" title="#{bundle.EditContactListTitle_name}" >
+                                    <pou:ajax event="keyup" />
+                                </pou:inputText>
+                                <pou:message for="name" />
+                            </pou:column>
+                        </pou:row>
+                    </pou:panelGrid>
+                    <pou:panelGrid styleClass="name" style="width: 100%;">
+                        <pou:row>
+                            <pou:column>
+                                <h:outputText value="#{accountController.translate('ContactList_Import')}"/>
+                            </pou:column>
+                            <pou:column>
+                                <h:form enctype="multipart/form-data">
+                                    <pou:panel toggleable="true" toggleSpeed="500" collapsed="true" widgetVar="panel" toggleTitle="#{accountController.translate('Toggle')}" style="width: 100%;">
+                                        <f:facet name="header" >
+                                            <pou:commandLink onclick="panel.toggle()" value="#{accountController.translate('ContactList_ImportFile')}" />
+                                        </f:facet>
+                                        <pou:fileUpload fileUploadListener="#{contactListController.handleFileUpload}"
+                                                        mode="advanced" auto="true" update=":main:messages :contactForm:newContactsTable :contactForm:name"
+                                                        allowTypes="/(\.|\/)(csv|txt|xls|xlsx)$/" sizeLimit="3000000" widgetVar="upl"
+                                                        label="#{accountController.translate('Upload')}" cancelLabel="#{accountController.translate('Cancel')}"/>
+                                        <!-- oncomplete="panel.toggle()" -->
+                                    </pou:panel>
+                                </h:form>
+                            </pou:column>
+                        </pou:row>
+                        <pou:row>
+                            <pou:column colspan="2">
+                                <center>
+                                    <pou:outputPanel id="newContactsTable">
+                                        <pou:dataTable value="#{contactListController.newContacts}" var="contactRow" rendered="#{contactListController.newContacts.size()>0}"
+                                                       paginator="true" paginatorPosition="bottom" rows="10"
+                                                       emptyMessage="#{accountController.translate('ContactList_Empty')}"
+                                                       paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                       rowsPerPageTemplate="5,10,15"
+                                                       resizableColumns="true">
+                                            <f:facet name="header">
+                                                <h:outputText value="#{accountController.translate('ContactList_newContacts')}" />
+                                            </f:facet>
+                                            <pou:columns value="#{contactListController.currentColNames}" var="cob" columnIndexVar="civ"
+                                                         rendered="#{contactListController.selected.columnNames!=null}">
+                                                <f:facet name="header">
+                                                    <h:outputText value="#{cob}" />
+                                                    (#{civ})
+                                                </f:facet>
+                                                <h:outputText value="#{contactRow.fields[civ]}" />
+                                            </pou:columns>
+                                        </pou:dataTable>
+                                    </pou:outputPanel>
+                                </center>
+                            </pou:column>
+                        </pou:row>
+                        <pou:row>
+                            <pou:column colspan="2" style="text-align: center;">
+                                <center>
+                                    <pou:dataTable id="contactsTable" value="#{contactListController.contactsLazyModel}" var="contactRow"
+                                                   paginator="true" paginatorPosition="bottom" rows="10"
+                                                   emptyMessage="#{accountController.translate('ContactList_Empty')}"
+                                                   paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                   rowsPerPageTemplate="5,10,15" sortBy="#{contactRow.modDate}" sortOrder="descending"
+                                                   resizableColumns="true">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{accountController.translate('ContactList_existingContacts')}" />
+                                        </f:facet>
+                                        <pou:columns value="#{contactListController.currentColNames}" var="cob" columnIndexVar="civ"
+                                                     rendered="#{contactListController.selected.columnNames!=null}"
+                                                     >
+                                            <f:facet name="header">
+                                                <h:outputText value="#{cob}" />
+                                                (#{civ})
+                                            </f:facet>
+                                            <h:outputText value="#{contactRow.fields[civ]}" style="#{contactRow.id==null?'background-color: #ddd;':''}" />
+                                        </pou:columns>
+                                    </pou:dataTable>
+                                </center>
+                            </pou:column>
+                        </pou:row>
+                    </pou:panelGrid>
+                    <br />
+                    <pou:commandButton ajax="false" action="#{contactListController.update}" value="#{accountController.translate('Save')}"
+                                       onclick="statusDialog.show();" oncomplete="statusDialog.hide();"  />
+                    <pou:commandButton ajax="false" action="#{contactListController.prepareList}" value="#{accountController.translate('Cancel')}" immediate="true" />
+                </pou:panel>
+            </h:form>
+        </ui:define>
+        <ui:define name="notLayout">
+            <pou:dialog modal="true" widgetVar="statusDialog" header="#{accountController.translate('PleaseWait')}"
+                        draggable="false" closable="false" resizable="false" >
+                <center>
+                    <pou:graphicImage value="/resources/images/ajaxloadingbar.gif" />
+                </center>
+            </pou:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

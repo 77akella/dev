@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pou="http://primefaces.org/ui">
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{accountController.translate('InteractionsSummaryTitle')}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form>
+                <center>
+                <pou:panelGrid columns="2">
+                    <f:facet name="header" >
+                        <h:outputText value="#{accountController.translate('InteractionsFilters')}" />
+                    </f:facet>
+
+                    <h:outputText value="#{accountController.translate('InteractionsFilters_fromDate')}" />
+                    <pou:calendar value="#{interactionResultController.fromDate}"
+                                    pattern="yyyy.MM.dd HH:mm" navigator="true" showButtonPanel="true">
+                        <pou:ajax update=":table" />
+                    </pou:calendar>
+
+                    <h:outputText value="#{accountController.translate('InteractionsFilters_toDate')}" />
+                    <pou:calendar value="#{interactionResultController.toDate}"
+                                pattern="yyyy.MM.dd HH:mm" navigator="true" showButtonPanel="true">
+                        <pou:ajax update=":table"/>
+                    </pou:calendar>
+
+                    <h:outputText value="#{accountController.translate('campaign')}" />
+                    <pou:selectOneMenu value="#{interactionResultController.selected}" converter="campaignConverter" >
+                        <f:selectItem itemLabel="#{accountController.translate('Select')}" itemValue="#{null}" />
+                        <f:selectItems value="#{campaignController.itemsAvailableSelectDelAny}" />
+                        <pou:ajax update=":table"/>
+                    </pou:selectOneMenu>
+                </pou:panelGrid>
+                </center>
+            </h:form>
+            <h:form id="table" >
+                <center>
+                <h:panelGrid columns="2" rendered="#{interactionResultController.selected!=null}">
+                    <pou:panelGrid>
+                        <f:facet name="header">
+                            <pou:row>
+                                <pou:column colspan="2">
+                                    <h:outputText value="#{accountController.translate('InteractionsSummary_incomCalls')}"/>
+                                </pou:column>
+                            </pou:row>
+                        </f:facet>
+                        <pou:row>
+                            <pou:column>
+                                <h:outputText value="#{accountController.translate('InteractionsSummary_callsCount')}: " />
+                            </pou:column>
+                            <pou:column>
+                                <h:outputText value="#{interactionResultController.inCallsCount}" />
+                            </pou:column>
+                        </pou:row>
+                        <pou:row>
+                            <pou:column>
+                                <h:outputText value="#{accountController.translate('InteractionsSummary_minDuration')}: " />
+                            </pou:column>
+                            <pou:column>
+                                <h:outputText value="#{interactionResultController.inMinDuration}" />
+                            </pou:column>
+                        </pou:row>
+                        <pou:row>
+                            <pou:column>
+                                <h:outputText value="#{accountController.translate('InteractionsSummary_maxDuration')}: " />
+                            </pou:column>
+                            <pou:column>
+                                <h:outputText value="#{interactionResultController.inMaxDuration}" />
+                            </pou:column>
+                        </pou:row>
+                        <pou:row>
+                            <pou:column>
+                                <h:outputText value="#{accountController.translate('InteractionsSummary_avgDuration')}: " />
+                            </pou:column>
+                            <pou:column>
+                                <h:outputText value="#{interactionResultController.inAvgDuration}" />
+                            </pou:column>
+                        </pou:row>
+                        <pou:row>
+                            <pou:column>
+                                <h:outputText value="#{accountController.translate('InteractionsSummary_sumDuration')}: " />
+                            </pou:column>
+                            <pou:column>
+                                <h:outputText value="#{interactionResultController.inSumDuration}" />
+                            </pou:column>
+                        </pou:row>
+                        <pou:row>
+                            <pou:column colspan="2">
+                                <pou:pieChart value="#{interactionResultController.inWrapCodes}" legendPosition="we" showDataLabels="true" styleClass="fixLegend"
+                                      style="width:500px;height:300px" title="#{accountController.translate('InteractionsSummary_wrapUpCodes')}" />
+                            </pou:column>
+                        </pou:row>
+                        <pou:row>
+                            <pou:column colspan="2">
+                                <pou:pieChart value="#{interactionResultController.inDnis}" legendPosition="we" showDataLabels="true" styleClass="fixLegend"
+                                      style="width:500px;height:300px" title="#{accountController.translate('InteractionsSummary_dnis')}"/>
+                            </pou:column>
+                        </pou:row>
+                    </pou:panelGrid>
+
+                    <pou:panelGrid rendered="#{interactionResultController.selected!=null}">
+                        <f:facet name="header">
+                            <pou:row>
+                                <pou:column colspan="2">
+                                    <h:outputText value="#{accountController.translate('InteractionsSummary_outgoingCalls')}"/>
+                                </pou:column>
+                            </pou:row>
+                        </f:facet>
+                        <pou:row>
+                            <pou:column>
+                                <h:outputText value="#{accountController.translate('InteractionsSummary_callsCount')}: " />
+                            </pou:column>
+                            <pou:column>
+                                <h:outputText value="#{interactionResultController.outCallsCount} (#{interactionResultController.outCallsCountTotal})" />
+                            </pou:column>
+                        </pou:row>
+                        <pou:row>
+                            <pou:column>
+                                <h:outputText value="#{accountController.translate('InteractionsSummary_minDuration')}: " />
+                            </pou:column>
+                            <pou:column>
+                                <h:outputText value="#{interactionResultController.outMinDuration}" />
+                            </pou:column>
+                        </pou:row>
+                        <pou:row>
+                            <pou:column>
+                                <h:outputText value="#{accountController.translate('InteractionsSummary_maxDuration')}: " />
+                            </pou:column>
+                            <pou:column>
+                                <h:outputText value="#{interactionResultController.outMaxDuration}" />
+                            </pou:column>
+                        </pou:row>
+                        <pou:row>
+                            <pou:column>
+                                <h:outputText value="#{accountController.translate('InteractionsSummary_avgDuration')}: " />
+                            </pou:column>
+                            <pou:column>
+                                <h:outputText value="#{interactionResultController.outAvgDuration}" />
+                            </pou:column>
+                        </pou:row>
+                        <pou:row>
+                            <pou:column>
+                                <h:outputText value="#{accountController.translate('InteractionsSummary_sumDuration')}: " />
+                            </pou:column>
+                            <pou:column>
+                                <h:outputText value="#{interactionResultController.outSumDuration}" />
+                            </pou:column>
+                        </pou:row>
+                        <pou:row>
+                            <pou:column colspan="2">
+                        <pou:pieChart value="#{interactionResultController.outWrapCodes}" legendPosition="we" showDataLabels="true" styleClass="fixLegend"
+                                      style="width:500px;height:300px" title="#{accountController.translate('InteractionsSummary_wrapUpCodes')}" />
+                            </pou:column>
+                        </pou:row>
+                        <pou:row>
+                            <pou:column colspan="2">
+                        <pou:pieChart value="#{interactionResultController.outCompletionCodes}" legendPosition="we" showDataLabels="true" styleClass="fixLegend"
+                                      style="width:500px;height:300px" title="#{accountController.translate('InteractionsSummary_completionCodes')}" />
+                            </pou:column>
+                        </pou:row>
+                    </pou:panelGrid>
+                </h:panelGrid>
+            </center>
+            </h:form>
+        </ui:define>
+        <ui:define name="notLayout">
+            <pou:ajaxStatus onstart="statusDialog.show();" oncomplete="statusDialog.hide();"/>
+            <pou:dialog modal="true" widgetVar="statusDialog" header="#{accountController.translate('PleaseWait')}"
+                        draggable="false" closable="false" resizable="false" >
+                <pou:graphicImage value="/resources/images/ajaxloadingbar.gif" />
+            </pou:dialog>
+        </ui:define>
+    </ui:composition>
+
+</html>

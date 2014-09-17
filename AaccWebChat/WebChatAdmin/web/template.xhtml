@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <meta http-equiv="refresh" content="#{session.maxInactiveInterval};url=#{request.contextPath}/login.xhtml"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/favicon.ico"/>
+    <title><ui:insert name="title">Default Title</ui:insert> - Административный модуль Web-Chat</title>
+    <h:outputStylesheet name="style.css"/>
+    <ui:insert name="head"> </ui:insert>
+</h:head>
+<h:body>
+    <p:graphicImage alt="#{administratorController.translate('Logo')}" url="/resources/images/logo.png"
+                    style="position: fixed; right: 0.5em; z-index: 3;"/>
+    <h:form id="main" style="width: 100%; margin: 0; padding: 0; position:fixed; top: 0px; right: 0px; z-index: 2;">
+        <p:menubar autoDisplay="false" style="padding: 0; margin: 0; font-weight: bold;" styleClass="menubar">
+            <p:menuitem icon="ui-icon-home" ajax="false" url="/"/>
+            <p:menuitem value="#{administratorController.translate('Administrators')}" ajax="false"
+                        action="/system/Administrators"/>
+            <p:menuitem value="#{administratorController.translate('WebChatConfigList')}" ajax="false"
+                        action="/webChatConfig/List"/>
+            <p:menuitem value="#{administratorController.translate('WorkTimeRangeList')}" ajax="false"
+                        action="/workTimeRange/List"/>
+            <p:menuitem url="http://rt.site.com.ua" value="#{administratorController.translate('ContactSupport')}"
+                        target="blank"/>
+            <p:submenu label="#{administratorController.current==null?'Login':administratorController.current.userName}"
+                       style="position: absolute; right: 150px;">
+                <p:menuitem action="/system/Administrator" ajax="false"
+                            value="#{administratorController.translate('PersonalSettings')}"/>
+                <p:menuitem action="#{administratorController.logout}" ajax="false"
+                            value="#{administratorController.translate('Logout')}"/>
+            </p:submenu>
+        </p:menubar>
+        <p:growl id="messages" showDetail="true" showSummary="true" life="10000" rendered="true" autoUpdate="true"/>
+    </h:form>
+
+    <div style="position: relative; top: 37px; padding: 0.1em 0; width: 100%; overflow: auto;">
+        <h2><ui:insert name="title">Default Title</ui:insert></h2>
+        <ui:insert name="body">Default Body</ui:insert>
+    </div>
+
+     <ui:insert name="notLayout"></ui:insert>
+</h:body>
+</html>

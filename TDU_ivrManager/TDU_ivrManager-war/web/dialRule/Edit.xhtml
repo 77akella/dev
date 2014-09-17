@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:pou="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{accountController.translate('EditDialRuleTitle')}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form id="dialRuleForm" styleClass="center">
+                <pou:resizable for="mainPanel" minWidth="500" handles="e,w" />
+                <pou:panel id="mainPanel" style="width: 80%">
+                    <pou:panelGrid styleClass="name" columns="2">
+                            <h:outputText value="#{accountController.translate('DialRule_name')}" />
+                            <pou:inputText id="name" value="#{dialRuleController.selected.name}" required="true" />
+                    </pou:panelGrid>
+                    <pou:dataTable id="dialRuleEnteries" value="#{dialRuleController.selected.dialRuleEnteries}" var="item"
+                               style="text-align: center;" emptyMessage="#{accountController.translate('no_recors')}"
+                               paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom" rows="10" rowsPerPageTemplate="5,10,15"
+                               paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                        <pou:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('DialRule_dnisLength')}" />
+                            </f:facet>
+                            <pou:spinner value="#{item.dnisLength}" min="0" max="20" required="true">
+                                <pou:ajax />
+                            </pou:spinner>
+                        </pou:column>
+                        <pou:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('DialRule_startsWith')}" />
+                            </f:facet>
+                            <pou:inputText value="#{item.startsWith}">
+                                <pou:ajax />
+                            </pou:inputText>
+                        </pou:column>
+                        <pou:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('DialRule_cutFromStart')}" />
+                            </f:facet>
+                            <pou:spinner value="#{item.cutFromStart}" min="0" max="20" required="true">
+                                <pou:ajax />
+                            </pou:spinner>
+                        </pou:column>
+                        <pou:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('DialRule_addToStart')}" />
+                            </f:facet>
+                            <pou:inputText value="#{item.addToStart}">
+                                <pou:ajax />
+                            </pou:inputText>
+                        </pou:column>
+                        <pou:column>
+                            <pou:commandButton actionListener="#{dialRuleController.removeDialRuleEntery(item)}" update="@parent :dialRuleForm:dialRuleEnteries" icon="ui-icon-trash"
+                                               immediate="true" ajax="false" title="#{accountController.translate('DialRule_removeEntery')}" />
+                        </pou:column>
+                    </pou:dataTable>
+                    <pou:commandButton actionListener="#{dialRuleController.addDialRuleEntery}" style="position: absolute; right: 10px;" ajax="true" update=":dialRuleForm:dialRuleEnteries" icon="ui-icon-plus"
+                        immediate="true" value="#{accountController.translate('DialRule_addEntery')}" title="#{accountController.translate('DialRule_addEntery')}"/>
+                <br />
+                <pou:commandButton ajax="false" action="#{dialRuleController.update}" value="#{accountController.translate('Save')}"  />
+                <pou:commandButton ajax="false" action="#{dialRuleController.prepareList}" value="#{accountController.translate('Cancel')}" immediate="true" />
+                </pou:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

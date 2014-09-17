@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ejb-jar xmlns = "http://java.sun.com/xml/ns/javaee"
+         version = "3.1"
+         xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation = "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd">
+     <enterprise-beans>
+         <session>
+             <ejb-name>ScheduledActions</ejb-name>
+             <env-entry>
+                 <env-entry-name>vpHost</env-entry-name>
+                 <env-entry-type>java.lang.String</env-entry-type>
+                 <env-entry-value>192.168.5.5</env-entry-value>
+             </env-entry>
+             <env-entry>
+                 <env-entry-name>vpUser</env-entry-name>
+                 <env-entry-type>java.lang.String</env-entry-type>
+                 <env-entry-value>outcall</env-entry-value>
+             </env-entry>
+             <env-entry>
+                 <env-entry-name>vpPass</env-entry-name>
+                 <env-entry-type>java.lang.String</env-entry-type>
+                 <env-entry-value>outcall01</env-entry-value>
+             </env-entry>
+             <env-entry>
+                 <env-entry-name>maxCalls</env-entry-name>
+                 <env-entry-type>java.lang.Integer</env-entry-type>
+                 <env-entry-value>3</env-entry-value>
+             </env-entry>
+             <env-entry>
+                 <env-entry-name>dbClasses</env-entry-name>
+                 <env-entry-type>java.lang.String</env-entry-type>
+                 <env-entry-value>org.postgresql.Driver=PostgreSQL;</env-entry-value>
+             </env-entry>
+         </session>
+     </enterprise-beans>
+</ejb-jar>

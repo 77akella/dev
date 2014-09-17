@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds" >
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/IS-All.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>logs/IS-All.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE-SOCKETSERVER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/SocketServer.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>logs/SocketServer.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE-CCT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/CCTconnector.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>logs/CCTconnector.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE-CCT-Events-All" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/CCTevents-All.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>logs/CCTevents-All.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE-Timing" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/Timing.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>logs/Timing.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE-CCT-SessionMonitor" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/CCT_SessionMonitor.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>logs/CCT_SessionMonitor.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE-MAIN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/IS.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>logs/IS.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE-HTTP" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/HttpServer.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>logs/HttpServer.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE-CacheCCMMconnection" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/CacheCCMMconnection.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>logs/CacheCCMMconnection.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type
+        ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="ua.com.AACC.is.socketServer" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE-SOCKETSERVER" />
+    </logger>
+    <logger name="ua.com.AACC.is.cct.SessionMonitor" level="WARN" additivity="false">
+        <appender-ref ref="FILE-CCT-SessionMonitor" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+    <logger name="ua.com.AACC.is.cct" level="INFO" additivity="false">
+        <appender-ref ref="FILE-CCT" />
+    </logger>
+    <logger name="ua.com.AACC.is.run" level="INFO" additivity="false">
+        <appender-ref ref="FILE-MAIN" />
+    </logger>
+    <logger name="ua.com.AACC.is.http" level="WARN" additivity="false">
+        <appender-ref ref="FILE-HTTP" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+    <logger name="ua.com.AACC.is.callback" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE-HTTP" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+    <logger name="ua.com.AACC.is.db.CacheCCMMconnection" level="DEBUG">
+        <appender-ref ref="FILE-CacheCCMMconnection" />
+    </logger>
+    <logger name="CCTevents" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE-CCT-Events-All" />
+    </logger>
+    <logger name="Timing" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE-Timing" />
+    </logger>
+
+    <root level="WARN">
+        <appender-ref ref="FILE" />
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</configuration>

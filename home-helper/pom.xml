@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>amurashov</groupId>
+	<artifactId>home-helper</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java-source-version>1.7</java-source-version>
+		<java-class-version>1.7</java-class-version>
+		<home-helper.version>0.0.1-SNAPSHOT</home-helper.version>
+		<servlet.api.version>2.5</servlet.api.version>
+		<spring.version>3.1.0.RELEASE</spring.version>
+		<junit.version>3.8.1</junit.version>
+		<log4j.version>1.2.16</log4j.version>
+		<javamail.version>1.4.1</javamail.version>
+		<velocity.version>1.4</velocity.version>
+		<jstl.version>1.2</jstl.version>
+		<mysql.driver.version>5.1.14</mysql.driver.version>
+        <commons-dbcp.version>1.2.2</commons-dbcp.version>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>${java-source-version}</source>
+					<target>${java-class-version}</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<modules>
+		<module>home-helper-web</module>
+		<module>home-helper-core</module>
+	</modules>
+</project>

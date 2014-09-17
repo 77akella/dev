@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:pou="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:composition template="/template.xhtml">
+        <ui:define name="head">
+            <script type="text/javascript">
+                function pasteImage(id){
+                    if(!id) return;
+                    editorWidgetVar.focus();
+                    setTimeout(function() {
+                        editorWidgetVar.editor.execCommand('inserthtml', '&lt;img id="img'+id+'" src="#{request.contextPath}/ImageFile?id='+id+'" /&gt;', false);
+                    }, 0);
+                }
+                function pasteText(id,text){
+                    editorWidgetVar.focus();
+                    setTimeout(function() {
+                        editorWidgetVar.editor.execCommand('inserthtml', '&lt;a id="var'+id+'" style="" &gt;{--'+text+'--}&lt;/a&gt;', true);//&lt;span style="-webkit-text-fill-color: #999;" &gt; &lt;/span&gt;
+                    }, 0);
+                }
+            </script>
+        </ui:define>
+        <ui:define name="title">
+            <h:outputText value="#{accountController.translate('EmailTemplateTitle')}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form id="form" styleClass="center">
+                <pou:panel style="width: 80%">
+                    <pou:resizable minWidth="500" handles="e,w" />
+                    <pou:panelGrid styleClass="name" columns="2">
+                        <h:outputText value="#{accountController.translate('EmailTemplate_name')}" />
+                        <pou:inputText id="name" value="#{emailTemplateController.selected.name}" required="true" />
+                    </pou:panelGrid>
+                    <br />
+
+                    <pou:panelGrid styleClass="name" style="width: 100%" columns="2">
+                        <h:outputText value="#{accountController.translate('Email_messageSubject')}" />
+                        <pou:inputText id="subject" value="#{emailTemplateController.selected.messageSubject}" style="width: 95%;" required="true"/>
+                    </pou:panelGrid>
+                    <pou:panelGrid style=" width: 100%;">
+                        <f:facet name="header">
+                            <pou:row>
+                                <pou:column>
+                                    <h:outputText value="#{accountController.translate('Email_variablesPanelHeader')}" />
+                                </pou:column>
+                                <pou:column>
+                                    <h:outputText value="#{accountController.translate('Email_imagesPanelHeader')}" />
+                                </pou:column>
+                            </pou:row>
+                        </f:facet>
+                        <pou:row>
+                            <pou:column style="text-align: center;">
+                                <center>
+                                    <pou:outputPanel id="var">
+                                        <pou:commandButton actionListener="#{emailTemplateController.prepareAddVar}" value="#{accountController.translate('Email_addVar')}"
+                                                           update=":editVarForm" style="display: block; float: left;"
+                                                           title="#{accountController.translate('Email_addVar')}" oncomplete="editVar.show()" icon="ui-icon-plus" />
+                                        <pou:commandButton id="varDelete" actionListener="#{emailTemplateController}" rendered="false"
+                                                           update="var editor :main:messages" immediate="true" style="display: block; float: left;" icon="ui-icon-trash"
+                                                           disabled="#{emailTemplateController.newVar.id==null}"/>
+                                        <pou:commandButton id="varEdit" type="button" onclick="editVar.show()" rendered="false"
+                                                           update="var editor :main:messages" immediate="true" style="display: block; float: left;" icon="ui-icon-pencil"
+                                                           disabled="#{emailTemplateController.newVar.id==null}"/>
+                                        <pou:selectOneMenu value="#{emailTemplateController.newVar}" styleClass="selectOrAdd" height="150" style="width: 200px;" converter="varConverter">
+                                            <f:selectItem itemValue="" itemLabel="#{accountController.translate('Select')}" />
+                                            <f:selectItems value="#{emailTemplateController.selected.vars}" var="var" itemLabel="#{var.name}" itemValue="#{var}" />
+                                            <pou:ajax update="varPaste varDelete varEdit" />
+                                        </pou:selectOneMenu>
+                                        <pou:commandButton id="varPaste" value="#{accountController.translate('Paste')}" type="button" onclick="pasteText('#{emailTemplateController.newVar.id}','#{emailTemplateController.newVar.name}')"
+                                                           update="editor" immediate="true" style="display: block; float: left;" icon="ui-icon-clipboard"
+                                                           disabled="#{emailTemplateController.newVar.id==null}"/>
+                                    </pou:outputPanel>
+                                </center>
+                            </pou:column>
+                            <pou:column style="text-align: center;">
+                                <pou:outputPanel id="img">
+                                    <pou:commandButton actionListener="#{imageFileController.prepareCreate}" value="#{accountController.translate('Email_uploadImage')}"
+                                                       update=":editFileForm" style="display: block; float: left;"
+                                                       title="#{accountController.translate('Email_uploadImage')}" oncomplete="editFile.show()" icon="ui-icon-plus" />
+                                    <pou:selectOneMenu value="#{emailTemplateController.selectedImage}" var="i" styleClass="selectOrAdd"
+                                                       converter="imageFileConverter" style="width: 200px;" height="150">
+                                        <f:selectItem itemValue="" itemLabel="#{accountController.translate('Select')}" />
+                                        <f:selectItems value="#{imageFileController.itemsAvailableSelect}" />
+                                        <pou:column>
+                                            <pou:graphicImage style="max-height: 50px; max-width: 100px;" url="/ImageFile?id=#{i.id}" />
+                                        </pou:column>
+                                        <pou:column>
+                                            <h:outputText value="#{i.name}" />
+                                        </pou:column>
+                                        <pou:ajax update="imgPaste" />
+                                    </pou:selectOneMenu>
+                                    <pou:commandButton id="imgPaste" value="#{accountController.translate('Paste')}" type="button" onclick="pasteImage('#{emailTemplateController.selectedImage.id}')"
+                                                       update="editor" immediate="true" style="display: block; float: left;" icon="ui-icon-clipboard"
+                                                       disabled="#{emailTemplateController.selectedImage==null}"/>
+                                </pou:outputPanel>
+                            </pou:column>
+                        </pou:row>
+                    </pou:panelGrid>
+                    <pou:editor id="editor" width="965" height="400" widgetVar="editorWidgetVar" value="#{emailTemplateController.selected.messageText}" />
+                    <pou:commandButton ajax="false" action="#{emailTemplateController.update}" value="#{accountController.translate('Save')}"  />
+                    <pou:commandButton ajax="false" action="#{emailTemplateController.prepareList}" value="#{accountController.translate('Cancel')}" immediate="true" />
+                    <pou:commandButton type="button" value="#{accountController.translate('Email_testMail')}" id="testButton"
+                                       update="testMessageForm :main:messages" style="display: block; float: right;"
+                                       title="#{accountController.translate('Email_testMail')}" />
+                </pou:panel>
+            </h:form>
+        </ui:define>
+        <ui:define name="notLayout">
+            <pou:overlayPanel id="testMessageForm" for=":form:testButton" hideEffect="fade" dynamic="true" widgetVar="testMessageForm" my="left top">
+                <h:form>
+                    <h:outputText value="! #{accountController.translate('Email_forTesting_messageTemplate_will_be_Saved')}" style="font-size: 1.2em; color: red;"/>
+
+                    <h:panelGrid columns="2" style="width: 100%;">
+                        <h:outputText value="#{accountController.translate('Email_testMessage_addrTo')}" />
+                        <pou:inputText value="#{emailTemplateController.testMessageAddr}" style="width: 95%;" />
+                    </h:panelGrid>
+                    <pou:commandButton action="#{emailTemplateController.sendMail}"
+                                       onstart="statusDialog.show()" oncomplete="statusDialog.hide(); testMessageForm.hide();" value="#{accountController.translate('Email_testMail')}"
+                                       update=":main:messages" />
+                </h:form>
+            </pou:overlayPanel>
+            <pou:dialog modal="true" header="#{accountController.translate('ImageFile_boxHeader')}" resizable="false" widgetVar="editFile">
+                <h:form id="editFileForm">
+                    <h:panelGrid columns="2" rendered="#{imageFileController.selected!=null}">
+                        <h:outputText value="#{accountController.translate('ImageFile_name')}" />
+                        <pou:inputText value="#{imageFileController.selected.name}" required="true"/>
+
+                        <h:outputText value="#{accountController.translate('ImageFile_upload')}" />
+                        <h:form enctype="multipart/form-data">
+                            <pou:fileUpload
+                                mode="advanced" auto="true"
+                                fileUploadListener="#{imageFileController.handleImageUpload}"
+                                allowTypes="/(\.|\/)(jpg|jpeg|png|gif)$/"
+                                update=":form:img :editFileForm :main:messages" label=""  />
+                        </h:form>
+
+                        <h:outputText value="" />
+                        <pou:commandButton actionListener="#{imageFileController.update}" onsuccess="editFile.hide();" immediate="true"
+                                           update=":editFileForm" value="#{accountController.translate('save')}" />
+                    </h:panelGrid>
+                </h:form>
+                <pou:ajax event="close" update=":form:img" />
+            </pou:dialog>
+
+            <pou:dialog modal="true" header="#{accountController.translate('NewVar_oxHeader')} #{emailTemplateController.newVar.name}" resizable="false" widgetVar="editVar">
+                <h:form id="editVarForm">
+                    <h:panelGrid columns="2" rendered="#{imageFileController.selected!=null}">
+                        <h:outputText value="#{accountController.translate('NewVar_name')}" />
+                        <pou:inputText value="#{emailTemplateController.newVar.name}" required="true"/>
+
+                        <h:outputText value="#{accountController.translate('NewVar_initValue')}" />
+                        <pou:inputText value="#{emailTemplateController.newVar.initVal}" required="true"/>
+
+                        <h:outputText value="" />
+                        <pou:commandButton actionListener="#{emailTemplateController.addVar}" onsuccess="editVar.hide();"
+                                           update=":editVarForm" value="#{accountController.translate('save')}" />
+                    </h:panelGrid>
+                </h:form>
+                <pou:ajax event="close" update=":form:var" />
+            </pou:dialog>
+            <pou:dialog modal="true" widgetVar="statusDialog" header="#{accountController.translate('PleaseWait')}"
+                        draggable="false" closable="false" resizable="false" >
+                <center>
+                    <pou:graphicImage value="/resources/images/ajaxloadingbar.gif" />
+                </center>
+            </pou:dialog>
+        </ui:define>
+    </ui:composition>
+</html>
+

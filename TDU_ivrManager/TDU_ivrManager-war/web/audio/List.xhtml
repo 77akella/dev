@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pou="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{accountController.translate('AudioFilesList')}" />
+        </ui:define>
+        <ui:define name="body">
+            <h:form id="fileList">
+                <br />
+                <pou:commandButton actionListener="#{audioFileController.prepareCreate}" icon="ui-icon-plus" oncomplete="editFile.show()" update=":editFileForm" title="#{accountController.translate('Create')}"/>
+                <pou:commandButton action="#{audioFileController.prepareList}" icon="ui-icon-refresh" ajax="false" title="#{accountController.translate('refresh')}"/>
+                <br />
+                <pou:dataTable value="#{audioFileController.lazyModel}" var="item" emptyMessage="#{accountController.translate('no_recors')}"
+                               paginator="true" paginatorAlwaysVisible="false" rows="20" sortBy="#{item.modDate}" sortOrder="descending">
+                    <pou:column headerText="#{accountController.translate('AudioFile_name')}" sortBy="#{item.name}">
+                        <h:outputText value="#{item.name}" />
+                    </pou:column>
+                    <pou:column headerText="#{accountController.translate('modDate')}" sortBy="#{item.modDate}">
+                        <h:outputText value="#{item.modDate}" />
+                    </pou:column>
+                    <pou:column headerText="#{accountController.translate('AudioFile_length')}" sortBy="#{item.contentLength}">
+                        <h:outputText value="#{audioFileController.formatFileSize(item.contentLength)}" />
+                    </pou:column>
+                    <pou:column headerText="#{accountController.translate('AudioFile_contentType')}">
+                        <h:outputText value="#{item.contentType}" />
+                    </pou:column>
+                    <pou:column styleClass="editDeleteActions">
+                        <f:facet name="header">
+                            <h:outputText value="&nbsp; #{accountController.translate('Actions')}"/>
+                        </f:facet>
+                        <pou:commandButton actionListener="#{audioFileController.prepareEdit}" onsuccess="editFile.show()" update=":editFileForm" icon="ui-icon-pencil" title="#{accountController.translate('Edit')}" />
+                        <pou:commandButton action="#{audioFileController.prepareDestroy}" icon="ui-icon-trash" oncomplete="confirmDelete.show()" update=":confirmDeleteDialog" title="#{accountController.translate('Delete')}"/>
+                    </pou:column>
+                </pou:dataTable>
+            </h:form>
+        </ui:define>
+        <ui:define name="notLayout">
+            <pou:dialog modal="true" header="#{accountController.translate('AudioFile_boxHeader')}" resizable="false" widgetVar="editFile">
+                <h:form id="editFileForm">
+                    <pou:messages showDetail="true" autoUpdate="true"/>
+                    <h:panelGrid columns="2" rendered="#{audioFileController.selected!=null}">
+                        <h:outputText value="#{accountController.translate('AudioFile_name')}" />
+                        <pou:inputText value="#{audioFileController.selected.name}" required="true"/>
+
+                        <h:outputText value="#{accountController.translate('AudioFile_data')}" rendered="#{audioFileController.selected.fileData!=null}" />
+                        <h:panelGrid columns="1" rendered="#{audioFileController.selected.contentType.startsWith('audio') and audioFileController.selected.fileData!=null}">
+                            <audio controls="controls" src="#{facesContext.externalContext.requestContextPath}/Audio?id=#{audioFileController.selected.id}" />
+                        </h:panelGrid>
+
+                        <h:outputText value="#{accountController.translate('AudioFile_upload')}" />
+                        <h:form enctype="multipart/form-data">
+                            <pou:fileUpload
+                                    mode="advanced" auto="true"
+                                    fileUploadListener="#{audioFileController.handleAudioUpload}"
+                                    allowTypes="/(\.|\/)(wav|mp3|flac)$/"
+                                    update=":fileList :editFileForm :main:messages" label=""  />
+                        </h:form>
+
+                        <h:outputText value="" />
+                        <pou:commandButton actionListener="#{audioFileController.update}" onsuccess="editFile.hide();"
+                                           update=":editFileForm" value="#{accountController.translate('save')}" />
+                    </h:panelGrid>
+                </h:form>
+                <pou:ajax event="close" update=":fileList" />
+            </pou:dialog>
+            <pou:confirmDialog message="#{accountController.translate('List_Delete_areYouShure')} '#{audioFileController.selected.name}' ? " appendToBody="true" id="confirmDeleteDialog"
+                   header="#{accountController.translate('ListFiles_Delete_confirmHeader')}" closable="true" severity="alert" widgetVar="confirmDelete">
+                   <h:form>
+                       <pou:commandButton value="#{accountController.translate('Yes')}" actionListener="#{audioFileController.destroy}" update=":fileList :main:messages" onclick="confirmDelete.hide()"/>
+                        <pou:commandButton value="#{accountController.translate('No')}" onclick="confirmDelete.hide()" type="button" />
+                   </h:form>
+            </pou:confirmDialog>
+        </ui:define>
+    </ui:composition>
+
+</html>

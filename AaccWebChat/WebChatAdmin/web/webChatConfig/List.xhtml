@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/template.xhtml">
+    <ui:define name="title">
+        <h:outputText value="#{administratorController.translate('ListWebChatConfigsTitle')}"></h:outputText>
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="centerPanel">
+            <br/>
+            <p:commandButton action="#{webChatConfigController.prepareCreate}" icon="ui-icon-plus" ajax="false"
+                             title="#{administratorController.translate('Create')}"/>
+            <p:commandButton action="#{webChatConfigController.prepareList}" icon="ui-icon-refresh" ajax="false"
+                             title="#{administratorController.translate('Refresh')}"/>
+            <br/>
+            <p:dataTable value="#{webChatConfigController.lazyModel}" lazy="true" var="item" style="min-width: 80%;"
+                         paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom" rows="10"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15" sortBy="#{item.name}" sortOrder="ascending"
+                         emptyMessage="#{administratorController.translate('no_recors')}">
+                <p:column sortBy="#{item.name}">
+                    <f:facet name="header">
+                        <h:outputText value="#{administratorController.translate('WebChatConfig_name')}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.name}"/>
+                </p:column>
+                <p:column width="400">
+                    <f:facet name="header">
+                        <h:outputText value="#{administratorController.translate('WebChatConfig_code')}"/>
+                    </f:facet>
+                    &lt;iframe src=&quot;#{administratorController.externalAddress}/?id=#{item.id}&quot; width=&quot;450&quot;&nbsp;height=&quot;500&quot;&nbsp;frameborder=&quot;0&quot;&gt;&nbsp;&lt;/iframe&gt;
+                </p:column>
+                <p:column sortBy="#{item.domain}">
+                    <f:facet name="header">
+                        <h:outputText value="#{administratorController.translate('WebChatConfig_domain')}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.domain}"/>
+                </p:column>
+                <p:column sortBy="#{item.skillset}">
+                    <f:facet name="header">
+                        <h:outputText value="#{administratorController.translate('WebChatConfig_skillset')}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.skillset}"/>
+                </p:column>
+                <p:column sortBy="#{item.modDate}">
+                    <f:facet name="header">
+                        <h:outputText value="#{administratorController.translate('modDate')}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.modDate}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="#{administratorController.translate('modBy')}"/>
+                    </f:facet>
+                    <h:outputText value="#{item.modByName}"/>
+                </p:column>
+                <p:column styleClass="editDeleteActions">
+                    <f:facet name="header">
+                        <h:outputText value="&nbsp; #{administratorController.translate('Actions')}"/>
+                    </f:facet>
+                    <p:commandButton action="#{webChatConfigController.prepareEdit}" icon="ui-icon-pencil" ajax="false"
+                                     title="#{administratorController.translate('Edit')}"/>
+                    <p:commandButton action="#{webChatConfigController.prepareDestroy}" icon="ui-icon-trash"
+                                     oncomplete="confirmDelete.show()" update=":confirmDeleteDialog"
+                                     title="#{administratorController.translate('Delete')}"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+    <ui:define name="notLayout">
+        <p:confirmDialog
+                message="#{administratorController.translate('List_Delete_areYouShure')} '#{webChatConfigController.selected.name}' ? "
+                appendToBody="true" id="confirmDeleteDialog"
+                header="#{administratorController.translate('ListWebChatConfig_Delete_confirmHeader')}" closable="true"
+                severity="alert" widgetVar="confirmDelete">
+            <h:form>
+                <p:commandButton value="#{administratorController.translate('Yes')}"
+                                 actionListener="#{webChatConfigController.destroy}"
+                                 update=":centerPanel :main:messages" onclick="confirmDelete.hide()"/>
+                <p:commandButton value="#{administratorController.translate('No')}" onclick="confirmDelete.hide()"
+                                 type="button"/>
+            </h:form>
+        </p:confirmDialog>
+    </ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" lazy-init="false">
+        <property name="driverClassName" value="$config{database.driver}" />
+        <property name="url" value="$config{database.url}" />
+        <property name="username" value="$config{database.username}" />
+        <property name="password" value="$config{database.password}" />
+        
+        <property name="logAbandoned" value="$config{database.logAbandoned}"/>
+        <property name="removeAbandoned" value="$config{database.removeAbandoned}"/>
+        <property name="maxActive" value="$config{database.maxActive}"/>
+        <!-- Following is for removing that stupid problem with MySQL closing connection -->
+        <property name="validationQuery" value="SELECT 1" />
+        <property name="testWhileIdle" value="true" />
+        <!-- This is one hour, mysql is configured for 8 hours usually-->
+        <property name="timeBetweenEvictionRunsMillis" value="360000000" />        
+    </bean>
+</beans>

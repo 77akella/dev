@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss>
+    <security-domain>WebChatAdminRealm</security-domain>
+    <!--<valve>-->
+       <!--<class-name>org.apache.catalina.valves.RemoteAddrValve</class-name>-->
+         <!--<param>-->
+            <!--<param-name>allow</param-name>-->
+            <!--<param-value>10.44.209.5,192.168.1.*,192.168.2.*</param-value>-->
+         <!--</param>-->
+         <!--&lt;!&ndash;<param>&ndash;&gt;-->
+            <!--&lt;!&ndash;<param-name>deny</param-name>&ndash;&gt;-->
+            <!--&lt;!&ndash;<param-value>*</param-value>&ndash;&gt;-->
+         <!--&lt;!&ndash;</param>&ndash;&gt;-->
+    <!--</valve>-->
+    <!--<virtual-host>WebChatAdmin</virtual-host>-->
+</jboss>

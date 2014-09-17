@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!--meta http-equiv="refresh" content="#{session.maxInactiveInterval/2};url=redirect.jsp?faces-redirect=true" /-->
+    <link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/favicon.ico"/>
+    <title>Вход - AACC Web Chat Admin</title>
+    <h:outputStylesheet name="style.css"/>
+</h:head>
+<h:body style="vertical-align: top; margin: 0; padding: 0; background-color: silver;">
+    <p:dialog header="Вход - Административный модуль Web-Chat" visible="true" modal="true" resizable="false"
+              closable="false" draggable="true">
+        <p:graphicImage value="/resources/images/logo.png" style="margin: 0 auto; display: block;"/>
+        <h:form id="loginForm">
+            <p:idleMonitor timeout="#{session.maxInactiveInterval*1000}">
+                <p:ajax event="idle" update="messages loginGrid"/>
+                <p:ajax event="active" update="messages loginGrid"/>
+            </p:idleMonitor>
+            <p:growl id="messages" showDetail="true" showSummary="true" life="25000" rendered="true" sticky="true"/>
+            <h:panelGrid id="loginGrid" columns="2" style="width: 100%;" styleClass="availNodesTable"
+                         rendered="#{session!=null}">
+                <h:outputLabel value="Имя пользователя: "/>
+                <p:inputText value="#{loginController.username}" tabindex="1" autocomplete="off">
+                    <p:ajax/>
+                </p:inputText>
+
+                <h:outputLabel value="Пароль: "/>
+                <p:password value="#{loginController.password}" tabindex="2" autocomplete="off" feedback="false">
+                    <p:ajax/>
+                </p:password>
+            </h:panelGrid>
+            <center>
+                <p:commandButton value="Войти" action="#{loginController.login}"
+                                 type="Submit" tabindex="3" ajax="false"/>
+                <p:commandButton value="Создать административного пользователя"
+                                 action="#{loginController.createAdminAccount}"
+                                 ajax="false" tabindex="4" rendered="#{loginController.administratorsEmpty}"/>
+            </center>
+        </h:form>
+    </p:dialog>
+
+
+</h:body>
+</html>

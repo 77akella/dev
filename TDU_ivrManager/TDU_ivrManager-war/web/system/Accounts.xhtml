@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pou="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{accountController.translate('system_accounts')}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form id="accountList">
+                <br />
+                <pou:commandButton actionListener="#{accountController.prepareCreate}" icon="ui-icon-plus" oncomplete="editAccount.show()" update=":editAccountForm" title="#{accountController.translate('Create')}"/>
+                <pou:commandButton action="#{accountController.prepareList}" icon="ui-icon-refresh" ajax="false" title="#{accountController.translate('refresh')}"/>
+                <br />
+                <pou:dataTable value="#{accountController.lazyModel}" var="item" emptyMessage="#{accountController.translate('no_recors')}"
+                               paginator="true" paginatorAlwaysVisible="false" rows="20" sortBy="#{item.modDate}" sortOrder="descending">
+                    <pou:column headerText="#{accountController.translate('login')}" sortBy="#{item.login}">
+                        <h:outputText value="#{item.login}" />
+                    </pou:column>
+                    <pou:column headerText="#{accountController.translate('modDate')}" sortBy="#{item.modDate}">
+                        <h:outputText value="#{item.modDate}" />
+                    </pou:column>
+                    <pou:column headerText="#{accountController.translate('accountGroups')}">
+                        <h:outputText value="#{accountController.accountGroupsToString(item.accountGroups)}" />
+                    </pou:column>
+                    <pou:column styleClass="editDeleteActions">
+                            <f:facet name="header">
+                                <h:outputText value="&nbsp; #{accountController.translate('Actions')}"/>
+                            </f:facet>
+                        <pou:commandButton actionListener="#{accountController.prepareEdit}" oncomplete="editAccount.show()" update=":editAccountForm" icon="ui-icon-pencil" title="#{accountController.translate('Edit')}" />
+                        <pou:commandButton action="#{accountController.prepareDestroy}" icon="ui-icon-trash" oncomplete="confirmDelete.show()" update=":confirmDeleteDialog" title="#{accountController.translate('Delete')}"/>
+                    </pou:column>
+                </pou:dataTable>
+            </h:form>
+        </ui:define>
+        <ui:define name="notLayout">
+            <pou:dialog modal="true" header="#{accountController.translate('edit_account')}" widgetVar="editAccount">
+                <h:form id="editAccountForm">
+                    <pou:messages showDetail="true" autoUpdate="true"/>
+                    <h:panelGrid columns="2" rendered="#{accountController.selected!=null}">
+                        <h:outputText value="#{accountController.translate('login')}" />
+                        <pou:inputText value="#{accountController.selected.login}" required="true"/>
+
+                        <h:outputText value="#{accountController.translate('language')}" />
+                        <pou:selectOneMenu value="#{accountController.selected.lang}" required="true">
+                            <f:selectItem itemValue="en" itemLabel="#{accountController.translate('en')}" />
+                            <f:selectItem itemValue="ru" itemLabel="#{accountController.translate('ru')}" />
+                        </pou:selectOneMenu>
+
+                        <h:outputText value="#{accountController.translate('assigned_groups')}" />
+                        <pou:selectManyCheckbox value="#{accountController.selected.accountGroups}" required="true" converter="accountGroupConverter">
+                            <f:selectItems value="#{accountController.grousSelect}" />
+                        </pou:selectManyCheckbox>
+
+                        <h:outputText value="#{accountController.translate('password')}" />
+                        <pou:password value="#{accountController.selected.password}" required="true" feedback="true" inline="true"
+                                      weakLabel="#{accountController.translate('weak')}" match="repeatPass" strongLabel="#{accountController.translate('strong')}" />
+
+                        <h:outputText value="#{accountController.translate('repeat_password')}" />
+                        <pou:password id="repeatPass" value="#{accountController.selected.password}" required="true" feedback="false"
+                                      weakLabel="#{accountController.translate('weak')}" strongLabel="#{accountController.translate('strong')}" />
+
+                        <h:outputText value="" />
+                        <pou:commandButton actionListener="#{accountController.updateSelected}"
+                                           update=":editAccountForm" value="#{accountController.translate('save')}" />
+                    </h:panelGrid>
+                </h:form>
+                <pou:ajax event="close" update=":accountList" />
+            </pou:dialog>
+            <pou:confirmDialog message="#{accountController.translate('List_Delete_areYouShure')} '#{accountController.selected.login}' ? " appendToBody="true" id="confirmDeleteDialog"
+                   header="#{accountController.translate('ListAccount_Delete_confirmHeader')}" closable="true" severity="alert" widgetVar="confirmDelete">
+                   <h:form>
+                       <pou:commandButton value="#{accountController.translate('Yes')}" actionListener="#{accountController.destroy}" update=":accountList :main:messages" onclick="confirmDelete.hide()"/>
+                        <pou:commandButton value="#{accountController.translate('No')}" onclick="confirmDelete.hide()" type="button" />
+                   </h:form>
+            </pou:confirmDialog>
+        </ui:define>
+    </ui:composition>
+
+</html>

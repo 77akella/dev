@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pou="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{accountController.translate('ListCampaignTitle')}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form id="listCampaigns">
+                <pou:commandButton action="#{campaignController.prepareCreate}" icon="ui-icon-plus" ajax="false" title="#{accountController.translate('Create')}"/>
+                <pou:commandButton action="#{campaignController.prepareList}" icon="ui-icon-refresh" ajax="false" title="#{accountController.translate('Refresh')}"/>
+                <br />
+                    <pou:dataTable value="#{campaignController.lazyModel}" var="item" style="min-width: 80%;"
+                                   paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom" rows="10"
+                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                 rowsPerPageTemplate="5,10,15" sortBy="#{item.modDate}" sortOrder="descending" emptyMessage="#{accountController.translate('no_recors')}">
+                        <pou:column  styleClass="editDeleteActions">
+                            <pou:commandButton actionListener="#{campaignController.prepareStart}"
+                                               disabled="#{item.status.equalsIgnoreCase('Running')}"
+                                               update=":main:messages :listCampaigns"
+                                               icon="ui-icon-play" title="#{accountController.translate('Campaign_Start')}"/>
+                            <pou:commandButton actionListener="#{campaignController.prepareStop}" oncomplete="confirmStop.show()"
+                                               disabled="#{!item.status.equalsIgnoreCase('Running')}"
+                                               update=":main:messages :listCampaigns :confirmDialog" icon="ui-icon-stop"
+                                               title="#{accountController.translate('Campaign_Stop')}"/>
+                        </pou:column>
+                        <pou:column sortBy="#{item.name}" styleClass="tablearrow">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('Campaign_name')}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.name}"/>
+                        </pou:column>
+                        <pou:column sortBy="#{item.modDate}" styleClass="tablearrow">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('modDate')}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.modDate}"/>
+                        </pou:column>
+                        <pou:column sortBy="#{item.maxCalls}" styleClass="tablearrow">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('ListCampaign_OutgoingMaxCalls')}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.maxCalls}"/>
+                        </pou:column>
+                        <pou:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('ListCampaign_direction')}"/>
+                            </f:facet>
+                            <h:outputText value="#{accountController.translate('ListCampaign_direction_both')}" rendered="#{item.outgoing and item.incomming}"/>
+                            <h:outputText value="#{accountController.translate('ListCampaign_direction_out')}" rendered="#{item.outgoing and !item.incomming}"/>
+                            <h:outputText value="#{accountController.translate('ListCampaign_direction_in')}" rendered="#{!item.outgoing and item.incomming}"/>
+                        </pou:column>
+                        <pou:column style="max-width: 120px;">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('ListCampaign_IncomNumbers')}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.incommingNumbersToString()}"/>
+                        </pou:column>
+                        <pou:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('ListCampaign_IncomCallFlow')}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.incommingCallFlow.name}"/>
+                        </pou:column>
+                        <pou:column styleClass="editDeleteActions">
+                            <f:facet name="header">
+                                <h:outputText value="&nbsp; #{accountController.translate('Actions')}"/>
+                            </f:facet>
+                            <pou:commandButton action="#{campaignController.prepareEdit}" icon="ui-icon-pencil" ajax="false" title="#{accountController.translate('Edit')}" />
+                            <pou:commandButton action="#{campaignController.prepareDestroy}" icon="ui-icon-trash" oncomplete="confirmDelete.show()" update=":confirmDeleteDialog" title="#{accountController.translate('Delete')}"/>
+                        </pou:column>
+                    </pou:dataTable>
+            </h:form>
+        </ui:define>
+        <ui:define name="notLayout">
+            <pou:confirmDialog message="#{accountController.translate('ListCampaign_Stop_areYouShure')} " appendToBody="true" id="confirmDialog"
+                   header="#{accountController.translate('ListCampaign_Stop_confirmHeader')} '#{campaignController.selected.name}'" closable="true" severity="alert" widgetVar="confirmStop">
+                   <h:form>
+                        <pou:commandButton value="#{accountController.translate('Yes')}" actionListener="#{campaignController.stop}" update=":listCampaigns :main:messages" onclick="confirmStop.hide()"/>
+                        <pou:commandButton value="#{accountController.translate('No')}" onclick="confirmStop.hide()" type="button" />
+                   </h:form>
+            </pou:confirmDialog>
+            <pou:confirmDialog message="#{accountController.translate('List_Delete_areYouShure')} '#{campaignController.selected.name}' ? " appendToBody="true" id="confirmDeleteDialog"
+                   header="#{accountController.translate('ListCampaign_Delete_confirmHeader')}" closable="true" severity="alert" widgetVar="confirmDelete">
+                   <h:form>
+                       <pou:commandButton value="#{accountController.translate('Yes')}" actionListener="#{campaignController.destroy}" update=":listCampaigns :main:messages" onclick="confirmDelete.hide()"/>
+                        <pou:commandButton value="#{accountController.translate('No')}" onclick="confirmDelete.hide()" type="button" />
+                   </h:form>
+            </pou:confirmDialog>
+        </ui:define>
+    </ui:composition>
+
+</html>

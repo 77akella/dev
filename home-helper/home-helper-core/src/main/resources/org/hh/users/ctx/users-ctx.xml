@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean name="humanVerificationBP" class="org.hh.users.bp.impl.HumanVerificationBPImpl">
+	</bean>
+
+	
+	<bean id="linkGeneratorResetPassword" class ="org.hh.users.bp.impl.LinkGeneratorBPImpl">
+		<property name="baseConfirmUrl" value="$config{reset_password_url}" />
+		<property name="linkValidityPeriod" value="$config{linkValidityPeriod}" />
+	</bean>
+	
+	<bean name="linkGeneratorBP" class="org.hh.users.bp.impl.LinkGeneratorBPImpl">
+		<property name="baseConfirmUrl" value="$config{confirm_url}" />
+		<property name="linkValidityPeriod" value="$config{linkValidityPeriod}" />
+	</bean>
+	
+	<bean name="passwordGeneratorBP" class="org.hh.users.bp.impl.PasswordGeneratorBPImpl">
+	</bean>
+	
+	<bean name="userManagementXmlDao" class="org.hh.users.dao.impl.UserManagementDaoXmlImpl">
+		<property name="pathToFiles" value="c:/temp/hh/xml/" />
+	</bean>
+	
+	<bean name="userManagementJdbcDao" class="org.hh.users.dao.impl.UserManagementDaoJdbcImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean name="userManagementBP" class="org.hh.users.bp.impl.UserManagementBPImpl" init-method="initDefaultUser">
+		<property name="userManagementDao" ref="userManagementJdbcDao" />
+		<property name="passwordGeneratorBP" ref="passwordGeneratorBP" />
+		<property name="defaultAdminEmail" value="$config{admin.email}" />
+		<property name="defaultAdminPassword" value="$config{admin.password}" />
+		<property name="emailSenderBP" ref="emailSenderBP" />
+		<property name="linkGeneratorBP" ref="linkGeneratorBP" />
+	</bean>
+	
+</beans>

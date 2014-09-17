@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
+              version="2.0">
+    <application>
+        <resource-bundle>
+            <base-name>/bundleUKR</base-name>
+            <var>UKR</var>
+        </resource-bundle>
+        <resource-bundle>
+            <base-name>/bundleENG</base-name>
+            <var>ENG</var>
+        </resource-bundle>
+        <resource-bundle>
+            <base-name>/bundleRUS</base-name>
+            <var>RUS</var>
+        </resource-bundle>
+        <locale-config>
+            <default-locale>ru_RU</default-locale>
+            <supported-locale>en_US</supported-locale>
+            <supported-locale>ua_UA</supported-locale>
+        </locale-config>
+    </application>
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>index</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>failure</from-outcome>
+            <to-view-id>/login.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>loginPage</from-outcome>
+            <to-view-id>/login.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+</faces-config>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pou="http://primefaces.org/ui">
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{accountController.translate('Current_Account')}" />
+        </ui:define>
+        <ui:define name="body">
+            <center>
+                <pou:messages showDetail="true" autoUpdate="true"/>
+                <pou:tabView style="width: 400px; margin: 100px auto 0;"  rendered="#{accountController.current!=null}">
+                    <pou:tab title="#{accountController.translate('Current_Account_Settings')}">
+                        <h:form>
+                            <pou:panelGrid columns="2">
+                                <h:outputText value="#{accountController.translate('login')}" />
+                                <h:outputText value="#{accountController.current.login}"/>
+
+                                <h:outputText value="#{accountController.translate('assigned_groups')}" />
+                                <h:outputText value="#{accountController.accountGroupsToString(accountController.current.accountGroups)}" />
+
+                                <h:outputText value="#{accountController.translate('language')}" />
+                                <pou:selectOneMenu value="#{accountController.current.lang}" required="true">
+                                    <f:selectItem itemValue="en" itemLabel="#{accountController.translate('en')}" />
+                                    <f:selectItem itemValue="ru" itemLabel="#{accountController.translate('ru')}" />
+                                </pou:selectOneMenu>
+
+                                <h:outputText value="#{accountController.translate('password_old')} *" />
+                                <pou:password value="#{accountController.oldPassword}" required="true" feedback="false" />
+
+                            </pou:panelGrid>
+                            <center>
+                                <br />
+                                <pou:commandButton action="#{accountController.updateCurrent}" ajax="false"
+                                                   value="#{accountController.translate('save')}" />
+                            </center>
+                        </h:form>
+                    </pou:tab>
+                    <pou:tab title="#{accountController.translate('Current_Account_Password')}">
+                        <h:form>
+                            <pou:panelGrid columns="2">
+                                <h:outputText value="#{accountController.translate('password')}" />
+                                <pou:password value="#{accountController.newPassword}" required="#{!accountController.newPassword.isEmpty()}" feedback="true" inline="true"
+                                              weakLabel="#{accountController.translate('weak')}" match="repeatPass" strongLabel="#{accountController.translate('strong')}" />
+
+                                <h:outputText value="#{accountController.translate('repeat_password')}" />
+                                <pou:password id="repeatPass" value="#{accountController.newPassword}" required="#{!accountController.newPassword.isEmpty()}" feedback="false"
+                                              weakLabel="#{accountController.translate('weak')}" strongLabel="#{accountController.translate('strong')}" />
+
+                                <h:outputText value="#{accountController.translate('password_old')} *" />
+                                <pou:password value="#{accountController.oldPassword}" required="true" feedback="false" />
+                            </pou:panelGrid>
+                            <center>
+                                <br />
+                                <br />
+                                <pou:commandButton action="#{accountController.updateCurrent}" ajax="false"
+                                                   value="#{accountController.translate('save')}" />
+                            </center>
+                        </h:form>
+                    </pou:tab>
+                </pou:tabView>
+            </center>
+            <h:form rendered="#{true and accountController.failedTranslationsRendered}">
+                <pou:inputTextarea style="width: 100%" label="Failed Translations" value="#{accountController.toTransLate}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

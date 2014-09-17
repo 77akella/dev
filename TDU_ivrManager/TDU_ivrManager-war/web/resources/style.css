@@ -1,0 +1,173 @@
+root {
+    display: block;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: x-small;
+    vertical-align: top;
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    font-size: 1.7em;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    color: grey;
+    margin: 0.2em auto 0;
+}
+
+a {
+    color: #e33b06;
+}
+
+.name {
+    width: 70%;
+    text-align: center;
+    margin: 0 auto;
+}
+.name td input {
+    width: 95%;
+    margin: 0 auto;
+}
+
+
+.name .ui-widget-content td{
+    border: none;
+}
+
+.center {
+    margin: 0 auto;
+    padding: 1em 0 1em;
+}
+
+.center div{
+    margin: 0 auto;
+}
+
+.login {
+    position: absolute;
+    right: 10px;
+}
+
+.twoColumns {
+    width: 100%;
+}
+.twoColumns td{
+    width: 50%;
+    vertical-align: top;
+}
+
+table {
+    empty-cells: show;
+}
+
+.columns {
+    width: auto;
+}
+
+.columns td table td{
+    border: none;
+}
+
+.editDeleteActions {
+    width: 5em;
+    text-align: center;
+}
+
+.editDeleteActions .ui-datatable-data td{
+    padding: 2px;
+    margin: 0;
+}
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+    text-shadow: none;
+}
+.ui-widget-header {
+color: #333;
+font-weight: bolder;
+/*font-weight: bold;*/
+font-size: 1.1em;
+text-shadow: none;
+text-align: center;
+}
+.fixLegend table.jqplot-table-legend{
+    width: auto;
+    font-size: 0.6em;
+}
+
+.jqplot-table-legend, .jqplot-table-legend-label {
+font-size: 1.2em;
+}
+
+.menubar {
+    top: -5px;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+}
+.menubar .ui-menuitem-link {
+    margin-top: 0.6em;
+}
+
+.ui-sortable-column-icon {width: 12px;}
+
+span.tablearrow
+{
+    margin-right: 15px;
+}
+
+div.availNodesTable table {
+    width: auto;
+}
+div.availNodesTable td {
+    padding: 2px;
+}
+
+div.availNodesTable .ui-datagrid-column,
+div.availNodesTable .ui-datagrid-content {
+    border: none;
+}
+
+.attributeName{
+    width: 100%;
+}
+.attributeName .ui-widget-content td{
+    border: none;
+}
+
+.selectOrAdd{
+    width: 143px;
+    display: block;
+    float: left;
+    margin-right: 5px;
+    position: relative;
+    top: 2px;
+}
+
+table th {
+    padding-right: 10px;
+}
+
+td {
+    vertical-align: central;
+    padding: 4px;
+}
+
+#busyImage {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
+
+.topColumns td{
+    vertical-align: top;
+}
+
+.dtmfPad button{
+    border-radius: 3px;
+}

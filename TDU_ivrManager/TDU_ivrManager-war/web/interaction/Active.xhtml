@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pou="http://primefaces.org/ui">
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{accountController.translate('InteractionsActiveTitle')}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form id="table" >
+                <h2><h:outputText value="#{accountController.translate('InteractionsActive_DataReloadAutomaticaly')}" style="color: black;  font-size: 0.7em;" /></h2>
+                <pou:poll interval="1" update="interactionsActiveTable campaignsProgress" />
+                <pou:panel>
+                    <f:facet name="header" >
+                        <h:outputText value="#{accountController.translate('InteractionsColumns')}" />
+                    </f:facet>
+                    <pou:selectManyCheckbox value="#{interactionActiveController.selectedColumns}">
+                        <f:selectItems value="#{interactionActiveController.availableColumns}" var="col" itemLabel="#{accountController.translate(col)}" />
+                        <pou:ajax update=":table"/>
+                    </pou:selectManyCheckbox>
+                </pou:panel>
+                    <pou:dataTable id="interactionsActiveTable" style="min-width: 80%;"
+                        var="item" value="#{interactionActiveController.active}" emptyMessage="#{accountController.translate('InteractionsActive_noRecords')}"
+                        rows="100" paginator="true" paginatorAlwaysVisible="false">
+                        <f:facet name="header">
+                            <h:outputText value="#{accountController.translate('InteractionsActive_activeInteractions')}" />
+                            <h:outputText value="#{interactionActiveController.interactionTimer}" style="position: absolute; right: 2em;" />
+                        </f:facet>
+                        <pou:column rendered="#{interactionActiveController.isColumnRendered('modDate')}">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('modDate')}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.modDate}" />
+                        </pou:column>
+                        <pou:column rendered="#{interactionActiveController.isColumnRendered('incomming')}">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('ListCampaign_direction')}" />
+                            </f:facet>
+                            <h:outputText value="#{accountController.translate('ListCampaign_direction_in')}" rendered="#{item.incomming}"/>
+                            <h:outputText value="#{accountController.translate('ListCampaign_direction_out')}" rendered="#{!item.incomming}"/>
+                        </pou:column>
+                        <pou:column rendered="#{interactionActiveController.isColumnRendered('duration')}">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('duration')}" />
+                            </f:facet>
+                            <h:outputText value="#{item.duration}" />
+                        </pou:column>
+                        <pou:column rendered="#{interactionActiveController.isColumnRendered('ani')}">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('ani')}" />
+                            </f:facet>
+                            <h:outputText value="#{item.ani}"/>
+                        </pou:column>
+                        <pou:column rendered="#{interactionActiveController.isColumnRendered('dnis')}">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('dnis')}" />
+                            </f:facet>
+                            <h:outputText value="#{item.dnis}"/>
+                        </pou:column>
+                        <pou:column rendered="#{interactionActiveController.isColumnRendered('lastComplCode')}">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('lastComplCode')}" />
+                            </f:facet>
+                            <h:outputText value="#{item.lastComplCode==null?accountController.translate('InteractionActive_complCodeNotSet'):accountController.translate(item.lastComplCode)}" />
+                        </pou:column>
+                        <pou:column rendered="#{interactionActiveController.isColumnRendered('wrapUpCode')}">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('wrapUpCode')}" />
+                            </f:facet>
+                            <h:outputText value="#{item.wrapUpCode}" />
+                        </pou:column>
+                        <pou:column rendered="#{interactionActiveController.isColumnRendered('callFlow.name')}">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('callFlow')}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.callFlow.name}"/>
+                        </pou:column>
+                        <pou:column rendered="#{interactionActiveController.isColumnRendered('campaign.name')}">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('campaign')}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.campaign.name}"/>
+                        </pou:column>
+                        <pou:column rendered="#{interactionActiveController.isColumnRendered('contactList.name')}">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('contactList')}" />
+                            </f:facet>
+                            <h:outputText value="#{item.contactList.name}"/>
+                        </pou:column>
+                        <pou:column rendered="#{interactionActiveController.isColumnRendered('contactId')}">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('contactId')}" />
+                            </f:facet>
+                            <h:outputText value="#{item.contactId}"/>
+                        </pou:column>
+                    </pou:dataTable>
+                <br />
+                    <pou:dataTable id="campaignsProgress" value="#{interactionActiveController.runningCampaings}" var="campaign" styleClass="topColumns"
+                                   emptyMessage="#{accountController.translate('InteractionsActive_noRunningCampaigns')}">
+                        <f:facet name="header">
+                            <h:outputText value="#{accountController.translate('InteractionsActive_campaignsProgress')}" />
+                            <h:outputText value="#{interactionActiveController.campaignTimer}" style="position: absolute; right: 2em;" />
+                        </f:facet>
+                        <pou:column style="text-align: center; font-weight: bold;">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('campaign')}" />
+                            </f:facet>
+                            <h:outputText value="#{campaign.name}"/>
+                        </pou:column>
+                        <pou:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('Statistics')}" />
+                            </f:facet>
+                            <h:panelGrid columns="2" style="text-align: center; font-size: 1.2em;">
+                                <h:outputText value="#{accountController.translate('ContactList_contactsCount')}" />
+                                <h:outputText value="#{campaign.contactList.contactsCount}" />
+
+                                <h:outputText value="#{accountController.translate('Interactions_Successful')}" />
+                                <h:outputText value="#{interactionActiveController.interactionsCountAnswered(campaign)}" />
+
+                                <h:outputText value="#{accountController.translate('Interactions_Attempts')}" />
+                                <h:outputText value="#{interactionActiveController.interactionsAttemptsCount(campaign)}" />
+
+                                <h:outputText value="#{accountController.translate('Interactions_Planned')}" />
+                                <h:outputText value="#{interactionActiveController.interactionsCountPlannedRecall(campaign)}" />
+
+                                <h:outputText value="#{accountController.translate('Interactions_Filed')}" />
+                                <h:outputText value="#{interactionActiveController.interactionsCountFiled(campaign)}" />
+                            </h:panelGrid>
+                        </pou:column>
+                        <pou:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('Interactions_capmaignProgressPieChart')}" />
+                            </f:facet>
+                            <pou:pieChart value="#{interactionActiveController.capmaignProgressPieChart(campaign)}"
+                                            style="width:100%;height:200px" styleClass="fixLegend" showDataLabels="true" sliceMargin="1" legendPosition="we"/>
+                        </pou:column>
+                        <pou:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('Interactions_contactListQualityPieChart')}" />
+                            </f:facet>
+                            <pou:pieChart value="#{interactionActiveController.contactListQualityPieChart(campaign)}"
+                                          style="width:100%;height:200px;" styleClass="fixLegend" showDataLabels="true" sliceMargin="1" legendPosition="ew"/>
+                        </pou:column>
+                    </pou:dataTable>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

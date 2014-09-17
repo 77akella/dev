@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pou="http://primefaces.org/ui">
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{accountController.translate('System_Information_title')}" />
+        </ui:define>
+        <ui:define name="body">
+            <div class="center">
+                <pou:resizable for="mainPanel" minWidth="800" handles="e" />
+                <pou:panel id="mainPanel" style="width: 80%">
+                    <pou:panelGrid columns="2" style="width: 100%">
+                        <f:facet name="header">
+                            <h:outputText value="#{accountController.translate('System_Information_title')}" />
+                        </f:facet>
+                        <h:outputText value="#{accountController.translate('System_vpHost')} " />
+                        <h:outputText value="#{systemController.vpHost}" />
+
+                        <h:outputText value="#{accountController.translate('System_vpUser')} " />
+                        <h:outputText value="#{systemController.vpUser}" />
+
+                        <h:outputText value="#{accountController.translate('System_maxCalls')} " />
+                        <h:outputText value="#{systemController.maxCalls}" />
+
+                        <h:outputText value="#{accountController.translate('System_freeChanels')} " />
+                        <h:outputText value="#{systemController.freeChanels}" />
+                    </pou:panelGrid>
+                    <br />
+                    <pou:panelGrid styleClass="center">
+
+                    </pou:panelGrid>
+                </pou:panel>
+            </div>
+        </ui:define>
+    </ui:composition>
+
+</html>

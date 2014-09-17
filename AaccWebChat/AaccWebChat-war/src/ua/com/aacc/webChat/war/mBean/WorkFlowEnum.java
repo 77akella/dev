@@ -1,0 +1,14 @@
+package ua.com.aacc.webChat.war.mBean;
+
+public enum WorkFlowEnum {
+    IN_LOGIN,
+    IN_ANON_CHAT_AUTOSTART,
+    IN_CHAT,
+    IN_REGISTER,
+    IN_INFORMATION_REQUEST_AACC_AUTH,
+    IN_PASSWORD_REMINDER,
+    SKILLSET_NOT_IN_SERVICE,
+    NOT_WORK_TIME,
+    IN_INFORMATION_REQUEST_NO_AUTH,
+    ERROR
+}

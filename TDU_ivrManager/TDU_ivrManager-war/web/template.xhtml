@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:pou="http://primefaces.org/ui">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="refresh" content="#{session.maxInactiveInterval};url=#{request.contextPath}/login.xhtml" />
+        <ui:insert name="head"> </ui:insert>
+        <link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/favicon.ico"/>
+        <title><ui:insert name="title">Default Title</ui:insert> - IVR Manager</title>
+        <h:outputStylesheet name="style.css"/>
+    </h:head>
+    <h:body>
+        <pou:graphicImage alt="#{accountController.translate('Logo')}" url="/resources/images/logo.png" style="position: fixed; right: 0.5em; z-index: 3;" />
+                    <h:form id="main" style="width: 100%; margin: 0; padding: 0; position:fixed; top: 0px; right: 0px; z-index: 2; background-color: white;">
+                        <pou:menubar autoDisplay="false" style="padding: 0; margin: 0; font-weight: bold;" styleClass="menubar">
+                            <pou:menuitem icon="ui-icon-home" ajax="false" url="/"/>
+                            <pou:submenu label="#{accountController.translate('System')}">
+                                <pou:menuitem value="#{accountController.translate('System_Information')}" ajax="false" action="/system/Information"/>
+                                <pou:menuitem value="#{accountController.translate('Accounts')}" ajax="false" action="/system/Accounts"/>
+                            </pou:submenu>
+                            <pou:submenu label="#{accountController.translate('InteractionManagement')}">
+                                <pou:menuitem value="#{accountController.translate('CallFlows')}" ajax="false" action="/callFlow/List"/>
+                                <pou:menuitem value="#{accountController.translate('EmailTemplates')}" ajax="false" action="/email/List"/>
+                                <pou:menuitem value="#{accountController.translate('Campaigns')}" ajax="false" action="/campaign/List"/>
+                            </pou:submenu>
+                            <pou:submenu label="#{accountController.translate('Data')}">
+                                <pou:menuitem value="#{accountController.translate('ContactLists')}" ajax="false" action="/contactsList/List"/>
+                                <pou:menuitem value="#{accountController.translate('ImageFilesList')}" ajax="false" action="/image/List"/>
+                                <pou:menuitem value="#{accountController.translate('AudioFilesList')}" ajax="false" action="/audio/List"/>
+                                <pou:menuitem value="#{accountController.translate('DialRuleList')}" ajax="false" action="/dialRule/List"/>
+                                <pou:menuitem value="#{accountController.translate('OutgoingNumberPoolList')}" ajax="false" action="/outgoingNumberPool/List"/>
+                                <pou:menuitem value="#{accountController.translate('WrapUpList')}" ajax="false" action="/wrapUpCode/List"/>
+                            </pou:submenu>
+                            <pou:submenu label="#{accountController.translate('Reports')}">
+                                <pou:menuitem value="#{accountController.translate('ActiveInteractions')}" ajax="false" action="/interaction/Active"/>
+                                <pou:menuitem value="#{accountController.translate('InteractionsDetails')}" ajax="false" action="/interaction/List"/>
+                                <pou:menuitem value="#{accountController.translate('InteractionsSummary')}" ajax="false" action="/interaction/Summary"/>
+                                <pou:menuitem value="#{accountController.translate('InteractionsStatistics')}" ajax="false" action="/interaction/Statistics"/>
+                            </pou:submenu>
+                            <pou:menuitem url="http://rt.site.com.ua" value="#{accountController.translate('ContactSupport')}" target="blank"/>
+                            <pou:menuitem action="/index.xhtml" value="#{accountController.translate('Help')}" rendered="false"/>
+
+                            <pou:submenu label="#{accountController.current==null?'Login':accountController.current.login}"
+                                         style="position: absolute; right: 150px;">
+                                <pou:menuitem action="/system/Account" ajax="false" value="#{accountController.translate('PersonalSettings')}" />
+                                <pou:menuitem action="#{accountController.logout}" ajax="false" value="#{accountController.translate('Logout')}" />
+                            </pou:submenu>
+                    </pou:menubar>
+                        <pou:growl id="messages" showDetail="true" showSummary="true" life="10000" rendered="true"/>
+                    </h:form>
+        <div style="position: relative; top: 37px; padding: 0.1em 0; width: 100%; overflow: auto;">
+            <h2><ui:insert name="title">Default Title</ui:insert></h2>
+                        <ui:insert name="body">Default Body</ui:insert>
+        </div>
+
+        <ui:insert name="notLayout"></ui:insert>
+    </h:body>
+</html>

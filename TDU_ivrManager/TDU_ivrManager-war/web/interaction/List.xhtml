@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pou="http://primefaces.org/ui">
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{accountController.translate('InteractionsDetailsTitle')}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form>
+                <h:panelGrid columns="2" styleClass="twoColumns">
+                    <pou:panel toggleSpeed="100" toggleable="true" collapsed="true" widgetVar="filters" toggleTitle="#{accountController.translate('Toggle')}">
+                        <f:facet name="header" >
+                            <pou:commandLink style="width: 100%;" onclick="filters.toggle()" value="#{accountController.translate('InteractionsFiltersAndColumns')}" />&nbsp;
+                        </f:facet>
+                        <center>
+                            <h:panelGrid columns="2" styleClass="twoColumns">
+                                <pou:panelGrid columns="2">
+                                    <f:facet name="header" >
+                                        <h:outputText value="#{accountController.translate('InteractionsFilters')}" />
+                                    </f:facet>
+                                    <h:outputText value="#{accountController.translate('InteractionsFilters_fromDate')}" />
+                                    <pou:calendar value="#{interactionController.fromDate}"
+                                                  pattern="yyyy.MM.dd HH:mm" navigator="true" showButtonPanel="true">
+                                        <pou:ajax event="dateSelect" listener="#{interactionController.onDateSelect}"
+                                                  update=":table" />
+                                    </pou:calendar>
+                                    <h:outputText value="#{accountController.translate('InteractionsFilters_toDate')}" />
+                                    <pou:calendar value="#{interactionController.toDate}"
+                                                  pattern="yyyy.MM.dd HH:mm" navigator="true" showButtonPanel="true">
+                                        <pou:ajax event="dateSelect" listener="#{interactionController.onDateSelect}"
+                                                  update=":table"/>
+                                    </pou:calendar>
+                                    <h:outputLabel for="direction" value="#{accountController.translate('ListCampaign_direction')}" />
+                                    <pou:selectOneMenu id="direction" value="#{interactionController.filters['incomming']}">
+                                        <f:selectItem itemLabel="#{accountController.translate('Any')}" itemValue="#{null}" />
+                                        <f:selectItem itemLabel="#{accountController.translate('ListCampaign_direction_in')}" itemValue="bool__true" />
+                                        <f:selectItem itemLabel="#{accountController.translate('ListCampaign_direction_out')}" itemValue="bool__false" />
+                                        <pou:ajax update=":table"/>
+                                    </pou:selectOneMenu>
+                                    <h:outputText value="#{accountController.translate('ani')}"/>
+                                    <pou:inputText value="#{interactionController.filters['ani']}" >
+                                        <pou:ajax update=":table"/>
+                                    </pou:inputText>
+                                    <h:outputText value="#{accountController.translate('dnis')}"/>
+                                    <pou:inputText value="#{interactionController.filters['dnis']}" >
+                                        <pou:ajax update=":table"/>
+                                    </pou:inputText>
+                                    <h:outputText value="#{accountController.translate('wrapUpCode')}"/>
+                                    <pou:selectOneMenu value="#{interactionController.filters['wrapUpCode']}" converter="wrapUpCodeConverter">
+                                        <f:selectItem itemLabel="#{accountController.translate('Any')}" itemValue="#{null}" />
+                                        <f:selectItems value="#{wrapUpCodeController.itemsAvailableSelectObj}" />
+                                        <pou:ajax update=":table"/>
+                                    </pou:selectOneMenu>
+                                    <h:outputText value="#{accountController.translate('callFlow')}" />
+                                    <pou:selectOneMenu value="#{interactionController.filters['callFlow']}" converter="callFlowConverter" >
+                                        <f:selectItem itemLabel="#{accountController.translate('Any')}" itemValue="#{null}" />
+                                        <f:selectItems value="#{callFlowController.itemsAvailableSelectDelAny}" />
+                                        <pou:ajax update=":table"/>
+                                    </pou:selectOneMenu>
+                                    <h:outputText value="#{accountController.translate('campaign')}" />
+                                    <pou:selectOneMenu value="#{interactionController.filters['campaign']}" converter="campaignConverter" >
+                                        <f:selectItem itemLabel="#{accountController.translate('Any')}" itemValue="#{null}" />
+                                        <f:selectItems value="#{campaignController.itemsAvailableSelectDelAny}" />
+                                        <pou:ajax update=":table"/>
+                                    </pou:selectOneMenu>
+                                    <h:outputText value="#{accountController.translate('contactList')}" />
+                                    <pou:selectOneMenu value="#{interactionController.filters['contactList']}" converter="contactListConverter" >
+                                        <f:selectItem itemLabel="#{accountController.translate('Any')}" itemValue="#{null}" />
+                                        <f:selectItems value="#{contactListController.itemsAvailableSelectDelAny}" />
+                                        <pou:ajax update=":table"/>
+                                    </pou:selectOneMenu>
+                                    <h:outputText value="#{accountController.translate('contactId')}"/>
+                                    <pou:inputText value="#{interactionController.filters['id__contactId']}" >
+                                        <pou:ajax update=":table"/>
+                                    </pou:inputText>
+                                    <pou:commandButton actionListener="#{interactionController.resetFilters}" update="@parent :table" value="#{accountController.translate('Reset_Filters')}" />
+                                    <pou:commandButton actionListener="#{interactionController.loadData}" update=":table" value="#{accountController.translate('Filter')}" />
+                                </pou:panelGrid>
+                                <pou:panelGrid columns="1" styleClass="columns">
+                                    <f:facet name="header" >
+                                        <h:outputText value="#{accountController.translate('InteractionsColumns')}" />
+                                    </f:facet>
+                                    <pou:selectManyCheckbox value="#{interactionController.selectedColumns}" layout="pageDirection" styleClass="columns">
+                                        <f:selectItems value="#{interactionController.availableColumns}" var="col"
+                                                       itemLabel="#{accountController.translate(col)}" />
+                                        <pou:ajax update=":table"/>
+                                    </pou:selectManyCheckbox>
+                                </pou:panelGrid>
+                            </h:panelGrid>
+                        </center>
+                    </pou:panel>
+                    <pou:panel toggleSpeed="100" toggleable="true" collapsed="true" widgetVar="exportPanel" toggleTitle="#{accountController.translate('Toggle')}">
+                        <f:facet name="header" >
+                            <pou:commandLink style="width: 100%;" onclick="exportPanel.toggle()" value="#{accountController.translate('ExportAllData')}" />&nbsp;
+                        </f:facet>
+                        <h:panelGrid columns="2" border="0" style="border: 0;">
+                            <pou:panel header="#{accountController.translate('ExportAllData')}">
+                                <h:commandLink>
+                                    <pou:graphicImage value="/resources/images/excel.png" />
+                                    <pou:dataExporter type="xls" target=":table:interactionsTable" fileName="Interactions" />
+                                </h:commandLink>
+
+                                <h:commandLink>
+                                    <pou:graphicImage value="/resources/images/pdf.png" />
+                                    <pou:dataExporter type="pdf" target=":table:interactionsTable" fileName="Interactions"/>
+                                </h:commandLink>
+
+                                <h:commandLink>
+                                    <pou:graphicImage value="/resources/images/csv.png" />
+                                    <pou:dataExporter type="csv" target=":table:interactionsTable" fileName="Interactions" />
+                                </h:commandLink>
+
+                                <h:commandLink>
+                                    <pou:graphicImage value="/resources/images/xml.png" />
+                                    <pou:dataExporter type="xml" target=":table:interactionsTable" fileName="Interactions" />
+                                </h:commandLink>
+                            </pou:panel>
+                            <pou:panel header="#{accountController.translate('ExportPageData')}">
+                                <h:commandLink>
+                                    <pou:graphicImage value="/resources/images/excel.png" />
+                                    <pou:dataExporter type="xls" target=":table:interactionsTable" fileName="Interactions" pageOnly="true"/>
+                                </h:commandLink>
+
+                                <h:commandLink>
+                                    <pou:graphicImage value="/resources/images/pdf.png" />
+                                    <pou:dataExporter type="pdf" target=":table:interactionsTable" fileName="Interactions" pageOnly="true"/>
+                                </h:commandLink>
+
+                                <h:commandLink>
+                                    <pou:graphicImage value="/resources/images/csv.png" />
+                                    <pou:dataExporter type="csv" target=":table:interactionsTable" fileName="Interactions" pageOnly="true"/>
+                                </h:commandLink>
+
+                                <h:commandLink>
+                                    <pou:graphicImage value="/resources/images/xml.png" />
+                                    <pou:dataExporter type="xml" target=":table:interactionsTable" fileName="Interactions" pageOnly="true"/>
+                                </h:commandLink>
+                            </pou:panel>
+                        </h:panelGrid>
+                    </pou:panel>
+                </h:panelGrid>
+            </h:form>
+            <h:form id="table" >
+                <pou:dataTable id="interactionsTable" emptyMessage="#{accountController.translate('no_recors')}"
+                               var="item" value="#{interactionController.lazyModel}"
+                               sortBy="#{item.modDate}" sortOrder="descending"
+                               rows="20" paginator="true" paginatorPosition="bottom" rowsPerPageTemplate="20,50,100" paginatorAlwaysVisible="false"
+                               paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                               selection="#{interactionController.selected}" selectionMode="single">
+                    <pou:ajax event="rowSelect" update=":dialog" oncomplete="interDetailsDialog.show()" />
+                    <pou:column rendered="#{interactionController.isColumnRendered('modDate')}" sortBy="#{item.modDate}">
+                        <f:facet name="header">
+                            <h:outputText value="#{accountController.translate('Date')}"/>
+                        </f:facet>
+                        <h:outputText value="#{item.modDate}" styleClass="tablearrow" />
+                    </pou:column>
+                    <pou:column rendered="#{interactionController.isColumnRendered('incomming')}" sortBy="#{item.incomming}">
+                        <f:facet name="header">
+                            <h:outputText value="#{accountController.translate('ListCampaign_direction')}" styleClass="tablearrow" />
+                        </f:facet>
+                        <h:outputText value="#{accountController.translate('ListCampaign_direction_in')}" rendered="#{item.incomming}"/>
+                        <h:outputText value="#{accountController.translate('ListCampaign_direction_out')}" rendered="#{!item.incomming}"/>
+                    </pou:column>
+                    <pou:column rendered="#{interactionController.isColumnRendered('duration')}" sortBy="#{item.duration}">
+                        <f:facet name="header">
+                            <h:outputText value="#{accountController.translate('duration')}" styleClass="tablearrow" />
+                        </f:facet>
+                        <h:outputText value="#{item.duration}" />
+                    </pou:column>
+                    <pou:column rendered="#{interactionController.isColumnRendered('ani')}" sortBy="#{item.ani}">
+                        <f:facet name="header">
+                            <h:outputText value="#{accountController.translate('ani')}" styleClass="tablearrow" />
+                        </f:facet>
+                        <h:outputText value="#{item.ani}"/>
+                    </pou:column>
+                    <pou:column rendered="#{interactionController.isColumnRendered('dnis')}" sortBy="#{item.dnis}">
+                        <f:facet name="header">
+                            <h:outputText value="#{accountController.translate('dnis')}" styleClass="tablearrow" />
+                        </f:facet>
+                        <h:outputText value="#{item.dnis}"/>
+                    </pou:column>
+                    <pou:column rendered="#{interactionController.isColumnRendered('lastComplCode')}">
+                        <f:facet name="header">
+                            <h:outputText value="#{accountController.translate('lastComplCode')}" />
+                        </f:facet>
+                        <h:outputText value="#{accountController.translate(item.lastComplCode)}" />
+                    </pou:column>
+                    <pou:column rendered="#{interactionController.isColumnRendered('wrapUpCode')}">
+                        <f:facet name="header">
+                            <h:outputText value="#{accountController.translate('wrapUpCode')}" />
+                        </f:facet>
+                        <h:outputText value="#{item.wrapUpCode.name}" />
+                    </pou:column>
+                    <pou:column rendered="#{interactionController.isColumnRendered('callFlow.name')}">
+                        <f:facet name="header">
+                            <h:outputText value="#{accountController.translate('callFlow')}"/>
+                        </f:facet>
+                        <h:outputText value="#{item.callFlow.name}" rendered="#{item.type==0}"/>
+                        <h:outputText value="#{item.actionNode.emailMessageTemplate.name}" rendered="#{item.type==1}"/>
+                    </pou:column>
+                    <pou:column rendered="#{interactionController.isColumnRendered('campaign.name')}">
+                        <f:facet name="header">
+                            <h:outputText value="#{accountController.translate('campaign')}"/>
+                        </f:facet>
+                        <h:outputText value="#{item.campaign.name}"/>
+                    </pou:column>
+                    <pou:column rendered="#{interactionController.isColumnRendered('contactList.name')}">
+                        <f:facet name="header">
+                            <h:outputText value="#{accountController.translate('contactList')}" />
+                        </f:facet>
+                        <h:outputText value="#{item.contactList.name}"/>
+                    </pou:column>
+                    <pou:column rendered="#{interactionController.isColumnRendered('contactId')}" sortBy="#{item.contactId}">
+                        <f:facet name="header">
+                            <h:outputText value="#{accountController.translate('contactId')}" styleClass="tablearrow" />
+                        </f:facet>
+                        <h:outputText value="#{item.contactId}"/>
+                    </pou:column>
+                </pou:dataTable>
+            </h:form>
+        </ui:define>
+        <ui:define name="notLayout">
+            <pou:ajaxStatus onstart="statusDialog.show();" oncomplete="statusDialog.hide();"/>
+            <pou:dialog modal="true" widgetVar="statusDialog" header="#{accountController.translate('PleaseWait')}"
+                        draggable="false" closable="false" resizable="false" >
+                <center>
+                    <pou:graphicImage value="/resources/images/ajaxloadingbar.gif" />
+                </center>
+            </pou:dialog>
+            <pou:dialog header="#{accountController.translate('InteractionsDetailsSelected')}" widgetVar="interDetailsDialog" resizable="true"
+                        showEffect="drop" hideEffect="drop" style="margin: 0; padding: 0;height: 650px;" position="right">
+                <pou:scrollPanel  style="margin: 0; padding: 0;height: 650px;" mode="native">
+                    <pou:outputPanel id="dialog">
+                        <pou:dataTable value="#{interactionController.selected.callHierarchy}" var="inter"
+                                       rendered="#{interactionController.selected!=null}" emptyMessage="#{accountController.translate('no_recors')}">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('InteractionsDetailsSelected_callHierarchy')}" />
+                            </f:facet>
+                            <pou:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{accountController.translate('type')}" />
+                                </f:facet>
+                                <h:outputText value="#{accountController.translate('InteractionDetail_typeCall')}" rendered="#{inter.type==0}"/>
+                                <h:outputText value="#{accountController.translate('InteractionDetail_typeEmail')}" rendered="#{inter.type==1}"/>
+                                <h:outputText value="#{accountController.translate('InteractionDetail_typeSMS')}" rendered="#{inter.type==2}"/>
+                            </pou:column>
+                            <pou:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{accountController.translate('dnis')}" />
+                                </f:facet>
+                                <h:outputText value="#{inter.dnis}" />
+                            </pou:column>
+                            <pou:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{accountController.translate('lastComplCode')}" />
+                                </f:facet>
+                                <h:outputText value="#{accountController.translate(inter.lastComplCode)}" />
+                            </pou:column>
+                            <pou:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{accountController.translate('modDate')}" />
+                                </f:facet>
+                                <h:outputText value="#{inter.modDate}" />
+                            </pou:column>
+                        </pou:dataTable>
+                        <h:panelGrid id="statMail" columns="2" cellpadding="4" rendered="#{interactionController.selected.type==1}">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('Interaction')} (ID=#{interactionController.selected.id})" />
+                            </f:facet>
+                            <h:outputText value="#{accountController.translate('ListCampaign_direction')}: " />
+                            <h:outputText value="#{accountController.translate('ListCampaign_direction_in')}" rendered="#{interactionController.selected.incomming}"/>
+                            <h:outputText value="#{accountController.translate('ListCampaign_direction_out')}" rendered="#{!interactionController.selected.incomming}"/>
+
+                            <h:outputText value="#{accountController.translate('mail_dnis')}: " />
+                            <h:outputText value="#{interactionController.selected.dnis}" />
+
+                            <h:outputText value="#{accountController.translate('mail_subject')}: " />
+                            <h:outputText value="#{interactionController.selected.messageSubject}" />
+
+                            <h:outputText value="#{accountController.translate('mail_text')}: " />
+                            <h:outputText id="messageText" value="Show: " />
+                            <pou:overlayPanel for="messageText" style="max-height: 300px; max-width: 400px;" >
+                                <h:outputText escape="false" value="#{interactionController.selected.messageText}" />
+                            </pou:overlayPanel>
+
+                        </h:panelGrid>
+                        <h:panelGrid id="stat" columns="2" cellpadding="4" rendered="#{interactionController.selected.type==0}">
+
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('Interaction')} (ID=#{interactionController.selected.id})" />
+                            </f:facet>
+                            <h:outputText value="#{accountController.translate('ListCampaign_direction')}: " />
+                            <h:outputText value="#{accountController.translate('ListCampaign_direction_in')}" rendered="#{interactionController.selected.incomming}"/>
+                            <h:outputText value="#{accountController.translate('ListCampaign_direction_out')}" rendered="#{!interactionController.selected.incomming}"/>
+
+                            <h:outputText value="#{accountController.translate('ani')}: " />
+                            <h:outputText value="#{interactionController.selected.ani}" />
+
+                            <h:outputText value="#{accountController.translate('dnis')}: " />
+                            <h:outputText value="#{interactionController.selected.dnis}" />
+
+                            <h:outputText value="#{accountController.translate('sessionId')}: " />
+                            <h:outputText value="#{interactionController.selected.sessionId}" />
+
+                            <h:outputText value="#{accountController.translate('ucid')}: " />
+                            <h:outputText value="#{interactionController.selected.ucid}" />
+
+                            <h:outputText value="#{accountController.translate('wrapUpCode')}: " />
+                            <h:outputText value="#{accountController.translate(interactionController.selected.wrapUpCode.name)}" />
+
+                            <h:outputText value="#{accountController.translate('wrapUpDesc')}: " />
+                            <h:outputText value="#{interactionController.selected.wrapUpCode.description}" />
+
+                            <h:outputText value="#{accountController.translate('startDate')}: " />
+                            <h:outputText value="#{interactionController.selected.startDate}" />
+
+                            <h:outputText value="#{accountController.translate('duration')}: " />
+                            <h:outputText value="#{interactionController.selected.duration}" />
+
+                            <h:outputText value="#{accountController.translate('campaign')}: " />
+                            <h:outputText value="#{interactionController.selected.campaign.name}" />
+
+                            <h:outputText value="#{accountController.translate('callFlow')}: " />
+                            <h:outputText value="#{interactionController.selected.callFlow.name}" />
+
+                            <h:outputText value="#{accountController.translate('contactList')}: " />
+                            <h:outputText value="#{interactionController.selected.contactList.name}" />
+
+                            <h:outputText value="#{accountController.translate('contactId')}: " />
+                            <h:outputText value="#{interactionController.selected.contactId}" />
+                        </h:panelGrid>
+
+                        <pou:dataTable id="complCodes" value="#{interactionController.mapVarsToList(interactionController.selected.complCodes)}"
+                                       var="complCode" rendered="#{interactionController.mapVarsToList(interactionController.selected.complCodes).size()>0}"
+                                       emptyMessage="#{accountController.translate('no_recors')}">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('InteractionsDetailsSelected_completionCodes')}" />
+                            </f:facet>
+                            <pou:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{accountController.translate('InteractionsDetailsSelected_completionCode')}" />
+                                </f:facet>
+                                <h:outputText value="#{accountController.translate(complCode.value)}" />
+                            </pou:column>
+                            <pou:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{accountController.translate('Date')}" />
+                                </f:facet>
+                                <h:outputText value="#{complCode.key}" >
+                                    <f:convertDateTime pattern="HH:mm:ss" />
+                                </h:outputText>
+                            </pou:column>
+                        </pou:dataTable>
+                        <pou:dataTable value="#{interactionController.selectedResultVars}" var="resultVar"
+                                       rendered="#{interactionController.selected.type==0}" emptyMessage="#{accountController.translate('no_recors')}">
+                            <f:facet name="header">
+                                <h:outputText value="#{accountController.translate('InteractionsDetailsSelected_callResults')}" />
+                            </f:facet>
+                            <pou:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{accountController.translate('Result_step')}" />
+                                </f:facet>
+                                <h:outputText value="#{resultVar.stepCount}" />
+                            </pou:column>
+                            <pou:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{accountController.translate('Variable')}" />
+                                </f:facet>
+                                <h:outputText value="#{resultVar.var.name} [#{accountController.translate(resultVar.var.dotName)}]" />
+                            </pou:column>
+                            <pou:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{accountController.translate('Value')}" />
+                                </f:facet>
+                                <h:outputText value="#{accountController.translate(resultVar.resultVal)}" />
+                            </pou:column>
+                        </pou:dataTable>
+                    </pou:outputPanel>
+                </pou:scrollPanel>
+            </pou:dialog>
+        </ui:define>
+    </ui:composition>
+</html>

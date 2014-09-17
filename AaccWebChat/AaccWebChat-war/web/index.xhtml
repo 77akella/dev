@@ -1,0 +1,564 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<f:event type="preRenderView" listener="#{webChatController.init}"/>
+<f:view contentType="text/html">
+<h:head>
+    <script type="text/javascript" src="s.js"></script>
+    <h:outputText rendered="false" value="&lt;!--[if lt IE 9]&gt;&lt;style type=&quot;text/css&quot; &gt; .ui-corner-all, .msg_chatMessageByCustomer, .msg_chatMessageByAgent, .msg_onHoldMessage, .msg_comfortMessage, .msg_onSessionEnd, .msg_onSessionStart, .msg_otherMessage {behavior: url(PIE.htc);} &lt;/style&gt;&lt;![endif]--&gt;" escape="false" />
+    <style type="text/css">
+
+        html, body {
+            font-family: tahoma, arial, verdana, sans-serif, Lucida Sans;
+            font-size: small;
+            height: 99%;
+        }
+
+        pre {
+            margin:0;
+        }
+
+        .ui-panel .ui-panel-content {
+            padding: 0.5em 0.5em;
+        }
+
+        #chatSendForm\:chatDisconnectButton {
+            position: absolute;
+            right: 0.5em;
+        }
+
+        .ui-messages-info, .ui-message-info {
+            text-align: center;
+        }
+
+        .column1 {
+            float: right;
+            vertical-align: middle;
+        }
+
+        .errorMessage {
+            text-align: center;
+            font-weight: bold;
+            display: block;
+        }
+
+        .skillsetNotInServiceMessage {
+            text-align: center;
+            font-weight: bold;
+            display: block;
+        }
+
+        .notWorkTimeMessage {
+            text-align: center;
+            font-weight: bold;
+            display: block;
+        }
+
+        .noAuth_informationRequest_table {
+            /*width: 100%;*/
+        }
+
+        .noAuth_informationRequest_table td {
+            width: 50%;
+            vertical-align: middle;
+        }
+
+        .aaccAuth_login_caption {
+            display: block;
+            text-align: center;
+            font-weight: bold
+        }
+
+        .aaccAuth_login_table {
+            /*width: 100%;*/
+        }
+
+        .aaccAuth_login_table td {
+            width: 50%;
+            vertical-align: middle;
+        }
+
+        .aaccAuth_register_caption {
+            display: block;
+            text-align: center;
+            font-weight: bold
+        }
+
+        .aaccAuth_register_table {
+            /*width: 100%;*/
+        }
+
+        .aaccAuth_register_table td {
+            width: 50%;
+            vertical-align: middle;
+        }
+
+        .aaccAuth_reminder_caption {
+            display: block;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .aaccAuth_reminder_table {
+            /*width: 100%;*/
+        }
+
+        .aaccAuth_reminder_table td {
+            width: 50%;
+            vertical-align: middle;
+        }
+
+        .aaccAuth_requestInformation_table {
+            /*width: 100%;*/
+        }
+
+        .aaccAuth_requestInformation_table td {
+            width: 50%;
+            vertical-align: middle;
+        }
+
+        .chat_messageInput {
+            width: 98%;
+            resize: none;
+        }
+
+        .chat_status {
+            color: red;
+        }
+
+        .chatlogs {
+            height: 300px;
+            overflow: auto;
+            padding: 0.5em 0.5em 0.5em 0.5em;
+        }
+
+        .msg_chatMessageByCustomer {
+            /*position: fixed;*/
+            display: block;
+            text-align: left;
+            overflow: auto;
+            padding: 0.5em 0.5em 0.5em 0.5em;
+            -moz-border-radius: 4px 0 0 0;
+            -webkit-border-radius: 4px 0 0 0;
+            border-radius: 4px 0 0 0;
+            border: 1px solid grey;
+            border-width: 1px 0 0 1px;
+            /*background: #ffffff;*/
+            color: #333333;
+            word-wrap: break-word;
+        }
+
+        .msg_chatMessageByAgent {
+            /*position: fixed;*/
+            /*left: 2em;*/
+            /*display: block;*/
+            display: block;
+            text-align: right;
+            overflow: auto;
+            padding: 0.5em 0.5em 0.5em 0.5em;
+            -moz-border-radius: 0 4px 0 0;
+            -webkit-border-radius: 0 4px 0 0;
+            border-radius: 0 4px 0 0;
+            border: 1px solid red;
+            border-width: 1px 1px 0 0;
+            /*background: #e2e2e2;*/
+            color: #333333;
+            word-wrap: break-word;
+        }
+
+        .msg_onHoldMessage {
+            display: block;
+            text-align: right;
+            overflow: auto;
+            padding: 0.5em 0.5em 0.5em 0.5em;
+            -moz-border-radius: 0 4px 0 0;
+            -webkit-border-radius: 0 4px 0 0;
+            border-radius: 0 4px 0 0;
+            border: 1px solid red;
+            border-width: 1px 1px 0 0;
+            /*background: #e3e3e3;*/
+            color: #333333;
+            word-wrap: break-word;
+        }
+
+        .msg_comfortMessage {
+            display: block;
+            text-align: right;
+            overflow: auto;
+            padding: 0.5em 0.5em 0.5em 0.5em;
+            -moz-border-radius: 0 4px 0 0;
+            -webkit-border-radius: 0 4px 0 0;
+            border-radius: 0 4px 0 0;
+            border: 1px solid red;
+            border-width: 1px 1px 0 0;
+            /*background: #e2e2e2;*/
+            color: #333333;
+            word-wrap: break-word;
+        }
+
+        .msg_onSessionEnd {
+            display: block;
+            text-align: right;
+            overflow: auto;
+            padding: 0.5em 0.5em 0.5em 0.5em;
+            -moz-border-radius: 0 4px 0 0;
+            -webkit-border-radius: 0 4px 0 0;
+            border-radius: 0 4px 0 0;
+            border: 1px solid red;
+            border-width: 1px 1px 0 0;
+            /*background: #c0e9f4;*/
+            color: #333333;
+            word-wrap: break-word;
+        }
+
+        .msg_onSessionStart {
+            display: block;
+            text-align: right;
+            overflow: auto;
+            padding: 0.5em 0.5em 0.5em 0.5em;
+            -moz-border-radius: 0 4px 0 0;
+            -webkit-border-radius: 0 4px 0 0;
+            border-radius: 0 4px 0 0;
+            border: 1px solid red;
+            border-width: 1px 1px 0 0;
+            /*background: #c0e9f4;*/
+            color: #333333;
+            word-wrap: break-word;
+        }
+
+        .msg_otherMessage{
+            display: block;
+            text-align: right;
+            overflow: auto;
+            padding: 0.5em 0.5em 0.5em 0.5em;
+            -moz-border-radius: 0 4px 0 0;
+            -webkit-border-radius: 0 4px 0 0;
+            border-radius: 0 4px 0 0;
+            border: 1px solid red;
+            border-width: 1px 1px 0 0;
+            /*background: #c0e9f4;*/
+            color: #333333;
+            word-wrap: break-word;
+        }
+
+        .msg_time {
+            display: inline-block;
+            color: #777;
+            font-size: 0.81em;
+        }
+
+        .msg_author {
+            display: inline-block;
+            font-size: 0.81em;
+            font-weight: bold;
+            margin: 0 0.5em;
+            color: #555;
+        }
+
+        #{webChatController.current.css}
+    </style>
+    <f:facet name="first">
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+        <title>Web Chat</title>
+    </f:facet>
+</h:head>
+
+<h:body onunload="closeAll();">
+<h:form>
+    <p:remoteCommand name="closeAll" async="false" action="#{webChatController.disconnectOnPageCloseEvent}" />
+</h:form>
+<script type="text/javascript">
+    if("onbeforeunload" in window){
+        window.onbeforeunload = closeAll;
+    } else {
+        try{
+            window.addEventListener("unload", closeAll, false);
+        } catch(e){}
+    }
+
+    var width=null;
+
+    function correctSelectOneMenu(){
+        $("div.ui-selectonemenu").each(
+                function()
+                {
+                    if(width==null){
+                        width=$(this).parent().width();
+                    }
+                    $(this).css("width",width);
+                }
+        );
+    }
+
+    function centerMainPanel(){
+        var all=$('#all');
+        var allHeight = all.height();
+        var htmlHeight = $('html').height();
+        var marg=(htmlHeight - allHeight)/2;
+        all.css({top: marg+'px',position: 'absolute',left: 0,right: 0});
+    }
+</script>
+<p:blockUI block=":all"
+           trigger=":webChatNoAuth_information:webChatNoAuth_information_submit,
+           :webChatAaccAuth_login_form:webChatAaccAuth_login_button,
+           :webChatAaccAuth_login_form:webChatAaccAuth_login_registration_button,
+           :webChatAaccAuth_login_form:webChatAaccAuth_login_reminder_button,
+           :webChatAaccAuth_registration_form:webChatAaccAuth_registration_button,
+           :webChatAaccAuth_passwordReminder_form:webChatAaccAuth_passwordReminder_button,
+           :webChatAaccAuth_information_form:webChatAaccAuth_information_submitButton">
+    <p:graphicImage value="ajax-loader.gif"/>
+</p:blockUI>
+
+<p:panel id="all" header="#{webChatController.translate(webChatController.worFlowStatus)}" >
+<p:messages id="messages" showDetail="true" showSummary="false" severity="info"/>
+<h:form >
+    <p:poll async="true" listener="#{common.ping}" interval="#{session.maxInactiveInterval-5}" />
+</h:form>
+<p:outputPanel rendered="#{webChatController.workflowSkillsetNotInService}" styleClass="skillsetNotInServiceMessage_wrapper">
+    <pre><h:outputText value="#{webChatController.current.skillsetNotInServiceMessage}" escape="false" styleClass="skillsetNotInServiceMessage" /></pre>
+</p:outputPanel>
+<p:outputPanel rendered="#{webChatController.workflowNotWorkTime}" styleClass="notWorkTimeMessage_wrapper">
+    <pre><h:outputText value="#{webChatController.current.notWorkTimeMessage}" escape="false" styleClass="notWorkTimeMessage" /></pre>
+</p:outputPanel>
+<p:outputPanel rendered="#{webChatController.workflowError}" styleClass="errorMessage_wrapper">
+    <pre><h:outputText value="#{webChatController.translate('errorMessage')}" escape="false" styleClass="errorMessage" /></pre>
+</p:outputPanel>
+
+<h:form id="webChatNoAuth_information" rendered="#{webChatController.workflowNoAuthInInformationRequest}" styleClass="noAuth_informationRequest_wrapper">
+    <h:panelGrid columnClasses="column1,column2" columns="2" styleClass="noAuth_informationRequest_table">
+        <p:outputLabel for="webChatNoAuth_informationName"
+                       value="#{webChatController.translate('webChatNoAuth_informationName')}"
+                       rendered="#{webChatController.current.requestName}"/>
+        <p:inputText id="webChatNoAuth_informationName" value="#{webChatController.customerName}"
+                     rendered="#{webChatController.current.requestName}"
+                     required="#{webChatController.current.requireName}"/>
+
+        <p:outputLabel for="webChatNoAuth_informationPhone"
+                       value="#{webChatController.translate('webChatNoAuth_informationPhone')}"
+                       rendered="#{webChatController.current.requestPhone}"/>
+        <p:inputMask id="webChatNoAuth_informationPhone" value="#{webChatController.customerPhone}"
+                     rendered="#{webChatController.current.requestPhone}"
+                     required="#{webChatController.current.requirePhone}"
+                     mask="(999) 999-9999"/>
+
+        <p:outputLabel for="webChatNoAuth_informationEmail"
+                       value="#{webChatController.translate('webChatNoAuth_informationEmail')}"
+                       rendered="#{webChatController.current.requestEmail}"/>
+        <p:inputText id="webChatNoAuth_informationEmail" value="#{webChatController.customerMail}"
+                     rendered="#{webChatController.current.requestEmail}"
+                     required="#{webChatController.current.requireEmail}">
+            <f:validateRegex disabled="#{not webChatController.current.requireEmail}"
+                pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+        </p:inputText>
+
+        <p:outputLabel for="webChatNoAuth_informationSubjectList"
+                       value="#{webChatController.translate('webChatNoAuth_informationSubjectList')}"
+                       rendered="#{webChatController.subjectFromList}"/>
+        <p:selectOneMenu id="webChatNoAuth_informationSubjectList"
+                         value="#{webChatController.webChatSubject}"
+                         rendered="#{webChatController.subjectFromList}"
+                         required="#{webChatController.current.subjectRequired}">
+            <f:selectItem itemValue=""
+                          itemLabel="#{webChatController.translate('webChatNoAuth_informationSubjectList_pleaseSelect')}"
+                          itemDisabled="true"/>
+            <f:selectItems value="#{webChatController.current.subjectsList}"/>
+        </p:selectOneMenu>
+        <p:outputLabel for="webChatNoAuth_informationSubjectText"
+                       value="#{webChatController.translate('webChatNoAuth_informationSubjectText')}"
+                       rendered="#{webChatController.subjectUserInput}"/>
+        <p:inputTextarea id="webChatNoAuth_informationSubjectText" value="#{webChatController.webChatSubject}"
+                         rendered="#{webChatController.subjectUserInput}"
+                         required="#{webChatController.current.subjectRequired}"/>
+        <h:outputText value="" />
+        <p:commandButton id="webChatNoAuth_information_submit" value="#{webChatController.translate('webChatNoAuth_information_submitButton')}"
+                         action="#{webChatController.startAnonymousChat}" update=":all"/>
+    </h:panelGrid>
+</h:form>
+
+<p:outputPanel rendered="#{webChatController.workflowInAnonChatAutoStart}">
+    <h:form>
+        <p:remoteCommand actionListener="#{webChatController.startAnonymousChat}" autoRun="true" name="autoStartChat"
+                         update=":all"/>
+    </h:form>
+    <h:outputText value="#{webChatController.translate('status_startChat')}" />
+</p:outputPanel>
+
+<p:outputPanel rendered="#{webChatController.workflowInChat}" styleClass="chat_wrapper">
+    <h:form id="chatHistoryForm" styleClass="chatHistoryForm">
+        <p:outputPanel  id="poll">
+            <p:poll interval="#{webChatController.chatHistoryRefreshPeriod}" autoStart="#{not webChatController.sessionEnded}"
+                    update="unreadMessages :chatSendForm:chatSendButton chatStatus :chatSendForm:chatDisconnectButton poll"
+                    onsuccess="processUpdatedMessages()"/>
+        </p:outputPanel>
+        <p:outputPanel id="public" layout="block" styleClass="ui-corner-all ui-widget-content chatlogs">
+            <div id="chatHistoryForm:chatWrapper">
+                <h:outputText id="chatHistory" value="#{webChatController.unreadMessages}" escape="false"/>
+            </div>
+        </p:outputPanel>
+        <h:outputText id="unreadMessages" escape="false" value="#{webChatController.unreadMessages}"
+                      style="display: none"/>
+        <h:outputText value="#{webChatController.status}" id="chatStatus" styleClass="chat_status" />
+    </h:form>
+    <h:form id="chatSendForm" styleClass="chat_sendForm">
+        <p:inputTextarea id="chatSendInput" value="#{webChatController.customerMessage}" styleClass="chat_messageInput"
+                         rows="3" autoResize="false">
+            <p:ajax event="keyup" listener="#{webChatController.onCustomerWrite}"/>
+        </p:inputTextarea>
+        <p:commandButton id="chatSendButton" value="#{webChatController.translate('webChatNoAuth_chat_sendButton')}"
+                         actionListener="#{webChatController.sendCustomerMessage}"
+                         oncomplete="$('.chat_messageInput').val('').focus(); processUpdatedMessages();"
+                         update=":chatHistoryForm:unreadMessages" disabled="#{not webChatController.agentOnline}"/>
+        <p:commandButton id="chatDisconnectButton"
+                         value="#{webChatController.translate('webChatNoAuth_chat_disconnectButton')}"
+                         actionListener="#{webChatController.disconnectSession}"
+                         oncomplete="$('.chat_messageInput').focus(); processUpdatedMessages();"
+                         update=":chatHistoryForm:unreadMessages chatDisconnectButton chatSendButton :chatHistoryForm:chatStatus"
+                         disabled="#{not webChatController.chatStarted}"/>
+    </h:form>
+    <script type="text/javascript">
+        $('#chatSendForm\\:chatSendInput').keydown(function (e) {
+            try{
+                if($('#chatSendForm\\:chatSendButton').attr('disabled') == 'disabled') return;
+            }catch (e){}
+            if (!e.shiftKey &amp;&amp; !e.ctrlKey &amp;&amp; (e.which == 13)) {
+                $('#chatSendForm\\:chatSendButton').click();
+            }
+        });
+        //Appending HTML5 Audio Tag in HTML Body
+        if("Audio" in window){
+            $('<audio id="chatAudio" preload="auto"><source src="notify.ogg" type="audio/ogg" /><source src="notify.mp3" type="audio/mpeg" /><source src="notify.wav" type="audio/wav" />' +
+                '</audio>').appendTo('body');
+        }else{
+            $('<bgsound id="bgsound\" src="#" autostart="true" />').appendTo('body');
+        }
+    </script>
+</p:outputPanel>
+
+<p:outputPanel rendered="#{webChatController.workflowAaccAuthInLogin}" styleClass="aaccAuth_login_wrapper">
+    <h:form id="webChatAaccAuth_login_form" styleClass="aaccAuth_login_form">
+        <h:panelGrid columnClasses="column1,column2" columns="2" styleClass="aaccAuth_login_table">
+            <p:outputLabel for="loginEmail" value="#{webChatController.translate('webChatAaccAuth_login_email')}"/>
+            <p:inputText id="loginEmail" value="#{webChatController.customerMail}" autocomplete="true"
+                         required="true"
+                         requiredMessage="#{webChatController.translate('webChatAaccAuth_login_email_requiredMessage')}"
+                         validatorMessage="#{webChatController.translate('webChatAaccAuth_login_email_validatorMessage')}">
+                <f:validateRegex
+                        pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+            </p:inputText>
+            <p:outputLabel for="loginPassword"
+                           value="#{webChatController.translate('webChatAaccAuth_login_password')}"/>
+            <p:password id="loginPassword" value="#{webChatController.aaccAuthCustPassword}" required="true"
+                        requiredMessage="#{webChatController.translate('webChatAaccAuth_login_password_requiredMessage')}"
+                        validatorMessage="#{webChatController.translate('webChatAaccAuth_login_password_validatorMessage')}" />
+            <h:outputText value="" />
+            <p:commandButton id="webChatAaccAuth_login_button" value="#{webChatController.translate('webChatAaccAuth_login_button')}"
+                             action="#{webChatController.loginToAacc}" update=":all :messages"/>
+            <p:commandLink id="webChatAaccAuth_login_registration_button" value="#{webChatController.translate('webChatAaccAuth_login_registration_button')}"
+                             action="#{webChatController.prepareRegister}" immediate="true"
+                             update=":all"/>
+            <p:commandLink id="webChatAaccAuth_login_reminder_button" value="#{webChatController.translate('webChatAaccAuth_login_reminder_button')}"
+                           action="#{webChatController.preparePasswordReminder}" immediate="true"
+                           update=":all"/>
+        </h:panelGrid>
+    </h:form>
+</p:outputPanel>
+<p:outputPanel rendered="#{webChatController.workflowAaccAuthInRegister}" styleClass="aaccAuth_register_wrapper">
+    <h:form id="webChatAaccAuth_registration_form">
+        <h:panelGrid columnClasses="column1,column2" columns="2" styleClass="aaccAuth_register_table">
+            <p:outputLabel for="loginEmail"
+                           value="#{webChatController.translate('webChatAaccAuth_registration_email')}"/>
+            <p:inputText id="loginEmail" value="#{webChatController.customerMail}" required="true">
+                <f:validateRegex
+                        pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+            </p:inputText>
+
+            <p:outputLabel for="loginPassword"
+                           value="#{webChatController.translate('webChatAaccAuth_registration_passw0rd')}"/>
+            <p:password id="loginPassword" value="#{webChatController.aaccAuthCustPassword}" required="true"
+                        feedback="true"
+                        validatorMessage="#{webChatController.translate('webChatAaccAuth_registration_password_validatorMessage')}"
+                        weakLabel="#{webChatController.translate('password_weak')}"
+                        goodLabel="#{webChatController.translate('password_good')}"
+                        strongLabel="#{webChatController.translate('password_strong')}"
+                        promptLabel="#{webChatController.translate('password_prompt')}"/>
+
+            <p:outputLabel for="webChatAaccAuth_informationName"
+                           value="#{webChatController.translate('webChatAaccAuth_registration_customerName')}"
+                           rendered="#{webChatController.current.requestName}"/>
+            <p:inputText id="webChatAaccAuth_informationName" value="#{webChatController.customerName}"
+                         rendered="#{webChatController.current.requestName}"
+                         required="#{webChatController.current.requireName}"/>
+
+            <p:outputLabel for="webChatAaccAuth_informationPhone"
+                           value="#{webChatController.translate('webChatAaccAuth_registration_customerPhone')}"
+                           rendered="#{webChatController.current.requestPhone}"/>
+            <p:inputMask id="webChatAaccAuth_informationPhone" value="#{webChatController.customerPhone}"
+                         rendered="#{webChatController.current.requestPhone}"
+                         required="#{webChatController.current.requirePhone}"
+                         mask="(999) 999-9999"/>
+
+            <p:commandButton value="#{webChatController.translate('webChatAaccAuth_registration_cancel')}"
+                             action="#{webChatController.goToLogin}" update=":all" immediate="true"
+                             type=""/>
+            <p:commandButton id="webChatAaccAuth_registration_button" value="#{webChatController.translate('webChatAaccAuth_registration_button')}" type="submit"
+                             action="#{webChatController.registerCustomer}" update=":all :messages"/>
+        </h:panelGrid>
+    </h:form>
+</p:outputPanel>
+<p:outputPanel rendered="#{webChatController.workflowAaccAuthInPasswordRemainder}" styleClass="aaccAuth_reminder_wrapper">
+    <h:form id="webChatAaccAuth_passwordReminder_form" styleClass="aaccAuth_reminder_form">
+        <h:panelGrid columnClasses="column1,column2" columns="2" styleClass="aaccAuth_reminder_table">
+            <p:outputLabel for="remindEmail"
+                           value="#{webChatController.translate('webChatAaccAuth_passwordReminder_email')}"/>
+            <p:inputText id="remindEmail" value="#{webChatController.customerMail}" required="true">
+                <f:validateRegex
+                        pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+            </p:inputText>
+
+            <p:commandButton value="#{webChatController.translate('webChatAaccAuth_passwordReminder_cancel')}"
+                             action="#{webChatController.goToLogin}" update=":all" immediate="true"
+                             type=""/>
+            <p:commandButton id="webChatAaccAuth_passwordReminder_button" value="#{webChatController.translate('webChatAaccAuth_passwordReminder_button')}"
+                             action="#{webChatController.remindPassword}" update=":all :messages"/>
+        </h:panelGrid>
+    </h:form>
+</p:outputPanel>
+<h:form id="webChatAaccAuth_information_form" rendered="#{webChatController.workflowAaccAuthInInformationRequest}" styleClass="aaccAuth_requestInformation_wrapper">
+    <h:panelGrid columnClasses="column1,column2" columns="2" styleClass="aaccAuth_requestInformation_table">
+        <p:outputLabel for="webChatAaccAuth_informationSubjectList"
+                       value="#{webChatController.translate('webChatAaccAuth_informationSubjectList')}"
+                       rendered="#{webChatController.subjectFromList}"/>
+        <p:selectOneMenu style="width: 180px;" id="webChatAaccAuth_informationSubjectList"
+                         value="#{webChatController.webChatSubject}"
+                         rendered="#{webChatController.subjectFromList}"
+                         required="#{webChatController.current.subjectRequired}">
+            <f:selectItem itemValue=""
+                          itemLabel="#{webChatController.translate('webChatNoAuth_informationSubjectList_pleaseSelect')}"
+                          itemDisabled="true"/>
+            <f:selectItems value="#{webChatController.current.subjectsList}"/>
+        </p:selectOneMenu>
+        <p:outputLabel for="webChatAaccAuth_informationSubjectText"
+                       value="#{webChatController.translate('webChatAaccAuth_informationSubjectText')}"
+                       rendered="#{webChatController.subjectUserInput}"/>
+        <p:inputTextarea id="webChatAaccAuth_informationSubjectText"
+                         value="#{webChatController.webChatSubject}"
+                         rendered="#{webChatController.subjectUserInput}"
+                         required="#{webChatController.current.subjectRequired}"/>
+        <h:outputText value="" />
+        <p:commandButton id="webChatAaccAuth_information_submitButton" value="#{webChatController.translate('webChatAaccAuth_information_submitButton')}"
+                         action="#{webChatController.startAaccAuthChat}" update=":all"/>
+    </h:panelGrid>
+</h:form>
+<script type="text/javascript">
+    correctSelectOneMenu();
+    centerMainPanel();
+</script>
+</p:panel>
+</h:body>
+
+</f:view>
+</html>
+

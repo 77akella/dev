@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vxml version="2.1" xmlns="http://www.w3.org/2001/vxml"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.w3.org/2001/vxml http://www.w3.org/TR/2007/REC-voicexml21-20070619/vxml.xsd">
+<script src="resources/addResults.js" />
+
+<var name="session___aai" expr="getScriptItem( 'session.connection.aai' )"/><var name="session___ani" expr="getScriptItem( 'session.connection.remote.uri' )"/><var name="session___dnis" expr="getScriptItem( 'session.connection.local.uri' )"/><var name="session___protocolname" expr="getScriptItem( 'session.connection.protocol.name' )"/><var name="session___protocolversion" expr="getScriptItem( 'session.connection.protocol.version' )"/><var name="session___uui" expr="'unknown'"/><var name="session___calltag" expr="'unknown'"/><var name="session___channel" expr="getScriptItem( 'session.avaya.telephone.channel' )"/><var name="session___vpcalledextension" expr="'unknown'"/><var name="session___vpcoveragereason" expr="'unknown'"/><var name="session___vpcoveragetype" expr="'unknown'"/><var name="session___vprdnis" expr="'unknown'"/><var name="redirectinfo___uri" expr="getRedirect('uri')"/><var name="redirectinfo___presentationinfo" expr="getRedirect('pi')"/><var name="redirectinfo___screeninginfo" expr="getRedirect('si')"/><var name="redirectinfo___reason" expr="getRedirect('reason')"/><var name="session___sharedmode" expr="getScriptItem( 'session.avaya.uui.mode' )"/><var name="shareduui___id" expr="getShareduui('id')"/><var name="shareduui___value" expr="getShareduui('value')"/><var name="session___sessionlabel" expr="getScriptItem( 'session.avaya.ucid' )"/><var name="session___sipcallid" expr="getSIPCallID()"/><var name="session___mediatype" expr="getScriptItem( 'session.connection.protocol.sip.media[1].type' )"/><var name="session___videoenabled" expr="getScriptItem( 'session.connection.video.enabled' )"/><var name="session___videocodec" expr="getScriptItem( 'session.connection.video.codec' )"/><var name="session___videoformat" expr="getScriptItem( 'session.connection.video.format' )"/><var name="session___videowidth" expr="getScriptItem( 'session.connection.video.width' )"/><var name="session___videoheight" expr="getScriptItem( 'session.connection.video.height' )"/><var name="session___videofps" expr="getScriptItem( 'session.connection.video.fps' )"/><var name="session___videobitrate" expr="getScriptItem( 'session.connection.video.bitrate' )"/><var name="session___videonearfmtp" expr="getScriptItem( 'session.connection.video.nearfmtp' )"/><var name="session___videofarfmtp" expr="getScriptItem( 'session.connection.video.farfmtp' )"/><var name="session___ucid" expr="getScriptItem( 'session.avaya.ucid' )"/><var name="session___conversefirst" expr="'unknown'"/><var name="session___conversesecond" expr="'unknown'"/>
+<var name="sessionId" expr="getScriptItem( 'session.avaya.telephone.call_tag' )"/>
+<var name="EXIT"/>
+<var name="EXIT_logger"/>
+<var name="wrapUpCode"/>
+<var name="wrapUpDesc"/>
+<var name="contactId" expr="'732'"/>
+<var name="contactListId" expr="'152'"/>
+<var name="campaignId" expr="'101'"/>
+<var name="callFlowId" expr="'157'"/>
+<var name="interId" expr="'733'"/>
+<var name="res" expr="''" />
+<form id="basicWrapUp_5">
+   <block>
+      <assign name="wrapUpCode" expr="'651'"/>
+      <goto next="#outSayMoney_7" />
+   </block>
+</form>
+     <var name="var___724"/>
+<form id="outSayMoney_7">
+<block>
+     <var name="varId" expr="'724'"/>
+     <var name="fetchMoney__7" />
+     <data name="fetchMoney__7" method="post" src="GetContactData" namelist="varId interId" />
+     <assign name="var___724" expr="GetData(fetchMoney__7,'contactData')" />
+    <prompt>
+        <audio src="Audio?id=652" />
+    </prompt>
+</block>
+<subdialog name="FoutSayMoney7" src="http://192.168.1.89:8080/module_bundle_ru/Start?sagecall=ru&amp;sagerunmodule=true" method="get">
+  <param name="data" expr="var___724"/>
+  <param name="dataType" value="money1"/>
+  <filled>
+      <audio src="Audio?id=652" />
+      <goto next="#outSayMoney_7_1" />
+  </filled>
+</subdialog>
+  <catch event="*.*">
+     <log expr="'event '+_event+': msg '+_message" />
+     <var name="level" expr="'error'"/>
+     <var name="src" expr="'vxml'"/>
+     <data method="post" src="Logger" namelist="results src level _event _message " />
+ </catch>
+    <catch event="connection.disconnect">
+        <script> addResultArray( [{varId:'725' , value:'played_not_ended'},{varId:'724' , value:var___724}] );</script>
+         <log expr="'call disconnected. sending data'" />
+         <data method="post" src="Logger" namelist="results contactId callFlowId contactListId interId campaignId wrapUpCode sessionId session___aai session___ani session___dnis session___protocolname session___protocolversion session___uui session___calltag session___channel session___vpcalledextension session___vpcoveragereason session___vpcoveragetype session___vprdnis redirectinfo___uri redirectinfo___presentationinfo redirectinfo___screeninginfo redirectinfo___reason session___sharedmode shareduui___id shareduui___value session___sessionlabel session___sipcallid session___mediatype session___videoenabled session___videocodec session___videoformat session___videowidth session___videoheight session___videofps session___videobitrate session___videonearfmtp session___videofarfmtp session___ucid session___conversefirst session___conversesecond" />
+         <log expr="'data sent.exiting'" />
+         <exit />
+     </catch>
+</form>
+<form id="outSayMoney_7_1">
+    <field>
+        <prompt bargein="false" timeout="0.1s">
+        </prompt>
+         <option dtmf="1" value="1" />
+         <catch event="error">
+        </catch>
+     </field>
+     <noinput>
+         <script> addResultArray( [{varId:'725' , value:'played'},{varId:'724' , value:var___724}] );</script>
+        <goto next="#basicWrapUp_9" />
+     </noinput>
+     <nomatch>
+         <script> addResultArray( [{varId:'725' , value:'played'},{varId:'724' , value:var___724}] );</script>
+     <goto next="#basicWrapUp_9" />
+     </nomatch>
+ <filled>
+      <script> addResultArray( [{varId:'725' , value:'played'},{varId:'724' , value:var___724}] );</script>
+      <goto next="#basicWrapUp_9" />
+  </filled>
+    <catch event="connection.disconnect">
+        <script> addResultArray( [{varId:'725' , value:'played_not_ended'},{varId:'724' , value:var___724}] );</script>
+         <log expr="'call disconnected. sending data'" />
+         <data method="post" src="Logger" namelist="results contactId callFlowId contactListId interId campaignId wrapUpCode sessionId session___aai session___ani session___dnis session___protocolname session___protocolversion session___uui session___calltag session___channel session___vpcalledextension session___vpcoveragereason session___vpcoveragetype session___vprdnis redirectinfo___uri redirectinfo___presentationinfo redirectinfo___screeninginfo redirectinfo___reason session___sharedmode shareduui___id shareduui___value session___sessionlabel session___sipcallid session___mediatype session___videoenabled session___videocodec session___videoformat session___videowidth session___videoheight session___videofps session___videobitrate session___videonearfmtp session___videofarfmtp session___ucid session___conversefirst session___conversesecond" />
+         <log expr="'data sent.exiting'" />
+         <exit />
+     </catch>
+</form>
+<form id="basicWrapUp_9">
+   <block>
+      <assign name="wrapUpCode" expr="'653'"/>
+      <goto next="#basicMenu_11" />
+   </block>
+</form>
+<form id="basicMenu_11">
+   <field name="FbasicMenu11">
+     <prompt>
+        <audio src="Audio?id=352"/>
+     </prompt>
+         <option dtmf="1" value="1" />
+     <noinput>
+     <script> noinputcount++; </script>
+        <reprompt/>
+     </noinput>
+     <noinput count="3">
+     <script> noinputcount++; </script>
+        <disconnect/>
+     </noinput>
+     <nomatch>
+     <script> nomatchcount++; </script>
+        <reprompt/>
+     </nomatch>
+     <nomatch count="3">
+     <script> nomatchcount++; </script>        <disconnect/>
+     </nomatch>
+   </field>
+      <filled>
+             <log expr="'***** Form basicMenu_11 value is: ' +FbasicMenu11"/>
+<script> addResultArray( [{varId:'719' , value:FbasicMenu11},{varId:'720' , value:noinputcount},{varId:'721' , value:nomatchcount}] );</script>
+    <if cond="FbasicMenu11 == '1'">
+       <goto next="#basicTransfer_15" />
+    </if>
+      </filled>
+     <catch event="connection.disconnect">
+         <script> addResultArray( [{varId:'719' , value:'input_error'},{varId:'720' , value:noinputcount},{varId:'721' , value:nomatchcount}] );</script>
+         <log expr="'call disconnected. sending data'" />
+         <data method="post" src="Submit" namelist="results contactId callFlowId contactListId interId campaignId wrapUpCode wrapUpDesc sessionId session___aai session___ani session___dnis session___protocolname session___protocolversion session___uui session___calltag session___channel session___vpcalledextension session___vpcoveragereason session___vpcoveragetype session___vprdnis redirectinfo___uri redirectinfo___presentationinfo redirectinfo___screeninginfo redirectinfo___reason session___sharedmode shareduui___id shareduui___value session___sessionlabel session___sipcallid session___mediatype session___videoenabled session___videocodec session___videoformat session___videowidth session___videoheight session___videofps session___videobitrate session___videonearfmtp session___videofarfmtp session___ucid session___conversefirst session___conversesecond" />
+         <log expr="'data sent.exiting'" />
+         <exit />
+     </catch></form>
+ <form id="basicTransfer_15">
+   <transfer name="FbasicTransfer15" dest="tel:+7081"
+    type="consultation" connecttimeout="40s" >
+     <catch event="connection.disconnect.hangup">
+         <script> addResultArray( [{varId:'716' , value:'hangup'}] );</script>
+         <data method="post" src="Submit" namelist="results contactId callFlowId contactListId interId campaignId wrapUpCode wrapUpDesc sessionId session___aai session___ani session___dnis session___protocolname session___protocolversion session___uui session___calltag session___channel session___vpcalledextension session___vpcoveragereason session___vpcoveragetype session___vprdnis redirectinfo___uri redirectinfo___presentationinfo redirectinfo___screeninginfo redirectinfo___reason session___sharedmode shareduui___id shareduui___value session___sessionlabel session___sipcallid session___mediatype session___videoenabled session___videocodec session___videoformat session___videowidth session___videoheight session___videofps session___videobitrate session___videonearfmtp session___videofarfmtp session___ucid session___conversefirst session___conversesecond" />
+      </catch>     <catch event="connection.disconnect.transfer">
+         <script> addResultArray( [{varId:'716' , value:'transfer'}] );</script>
+         <data method="post" src="Submit" namelist="results contactId callFlowId contactListId interId campaignId wrapUpCode wrapUpDesc sessionId session___aai session___ani session___dnis session___protocolname session___protocolversion session___uui session___calltag session___channel session___vpcalledextension session___vpcoveragereason session___vpcoveragetype session___vprdnis redirectinfo___uri redirectinfo___presentationinfo redirectinfo___screeninginfo redirectinfo___reason session___sharedmode shareduui___id shareduui___value session___sessionlabel session___sipcallid session___mediatype session___videoenabled session___videocodec session___videoformat session___videowidth session___videoheight session___videofps session___videobitrate session___videonearfmtp session___videofarfmtp session___ucid session___conversefirst session___conversesecond" />
+      </catch>      <filled>
+          <log expr="'***** Form basicTransfer_15 value is: ' +FbasicTransfer15"/>
+      </filled>
+   </transfer>
+   <block>
+     <if cond="FbasicTransfer15!='unknown'">
+         <script> addResultArray( [{varId:'716' , value:FbasicTransfer15}] );</script>
+     </if>
+     <goto next="#exit" />
+   </block>
+</form>
+<form id="exit">
+     <block>
+         <log expr="'disconnectiong call'" />
+         <disconnect/>
+         <log expr="'disconnected call'" />
+     </block>
+</form>
+<catch event="connection.disconnect connection.disconnect.hangup">
+         <log expr="'call disconnected. sending data'" />
+         <data method="post" src="Submit" namelist="session___dnis results contactId callFlowId contactListId interId campaignId wrapUpCode sessionId session___aai session___ani session___protocolname session___protocolversion session___uui session___calltag session___channel session___vpcalledextension session___vpcoveragereason session___vpcoveragetype session___vprdnis redirectinfo___uri redirectinfo___presentationinfo redirectinfo___screeninginfo redirectinfo___reason session___sharedmode shareduui___id shareduui___value session___sessionlabel session___sipcallid session___mediatype session___videoenabled session___videocodec session___videoformat session___videowidth session___videoheight session___videofps session___videobitrate session___videonearfmtp session___videofarfmtp session___ucid session___conversefirst session___conversesecond" />
+         <log expr="'data sent.exiting'" />
+         <exit />
+</catch>
+<catch event="error">
+     <log expr="'event '+_event+': msg '+_message" />
+     <var name="level" expr="'error'"/>
+     <var name="src" expr="'vxml'"/>
+     <data method="post" src="Logger" namelist="results src level _event _message callFlowId contactId contactListId interId campaignId wrapUpCode wrapUpDesc sessionId  session___aai session___ani session___dnis session___protocolname session___protocolversion session___uui session___calltag session___channel session___vpcalledextension session___vpcoveragereason session___vpcoveragetype session___vprdnis redirectinfo___uri redirectinfo___presentationinfo redirectinfo___screeninginfo redirectinfo___reason session___sharedmode shareduui___id shareduui___value session___sessionlabel session___sipcallid session___mediatype session___videoenabled session___videocodec session___videoformat session___videowidth session___videoheight session___videofps session___videobitrate session___videonearfmtp session___videofarfmtp session___ucid session___conversefirst session___conversesecond" />
+     <disconnect /></catch>
+</vxml>

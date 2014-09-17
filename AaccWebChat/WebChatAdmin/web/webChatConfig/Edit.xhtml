@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+<ui:composition template="/template.xhtml">
+    <ui:define name="title">
+        <h:outputText value="#{administratorController.translate('EditWebChatConfigTitle')}"/>
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="webChatConfigForm" styleClass="center">
+            <p:resizable for="mainPanel" minWidth="500" handles="e,w"/>
+            <p:panel id="mainPanel" style="width: 60%">
+                <p:panelGrid styleClass="name" columns="4">
+                    <p:outputLabel for="name" value="#{administratorController.translate('WebChatConfig_name')}"/>
+                    <p:inputText id="name" value="#{webChatConfigController.selected.name}" required="true"/>
+
+                    <p:outputLabel for="disabled" value="#{administratorController.translate('WebChatConfig_disabled')}"/>
+                    <p:selectBooleanCheckbox id="disabled" value="#{webChatConfigController.selected.disabled}" />
+                </p:panelGrid>
+                <p:panelGrid columns="2" styleClass="twoColumns">
+
+                    <p:outputLabel for="lang" value="#{administratorController.translate('WebChatConfig_lang')}"/>
+                    <p:selectOneMenu id="lang" value="#{webChatConfigController.selected.lang}" required="true"
+                                     style="width: 200px;">
+                        <f:selectItems value="#{webChatConfigController.itemsLanguages}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="domain" value="#{administratorController.translate('WebChatConfig_domain')}"/>
+                    <p:inputText id="domain" value="#{webChatConfigController.selected.domain}" required="true"/>
+
+                    <p:outputLabel for="skillset"
+                                   value="#{administratorController.translate('WebChatConfig_skillset')}"/>
+                    <p:selectOneMenu id="skillset" value="#{webChatConfigController.selected.skillset}"
+                                     required="true" style="width: 200px;">
+                        <f:selectItem itemLabel="#{administratorController.translate('selectItem_notChoosen')}"
+                                      itemValue="" itemDisabled="true" />
+                        <f:selectItems value="#{webChatConfigController.itemsAllWcSkillsets}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="skillsetNotInServiceCheck" value="#{administratorController.translate('WebChatConfig_skillsetNotInServiceCheck')}"/>
+                    <p:selectBooleanCheckbox id="skillsetNotInServiceCheck" value="#{webChatConfigController.selected.skillsetNotInServiceCheck}" >
+                            <p:ajax update="skillsetNotInServiceMessage" />
+                    </p:selectBooleanCheckbox>
+
+                    <p:outputLabel for="skillsetNotInServiceMessage"
+                                   value="#{administratorController.translate('WebChatConfig_skillsetNotInServiceMessage')}"/>
+                    <p:inputTextarea id="skillsetNotInServiceMessage"
+                                     value="#{webChatConfigController.selected.skillsetNotInServiceMessage}"
+                                     required="#{webChatConfigController.selected.skillsetNotInServiceCheck}"
+                                     disabled="#{!webChatConfigController.selected.skillsetNotInServiceCheck}"
+                                     style="width: 99%;">
+                            <p:ajax />
+                    </p:inputTextarea>
+
+                    <p:outputLabel for="authType" value="#{administratorController.translate('WebChatConfig_auth')}"/>
+                    <p:selectOneMenu id="authType" value="#{webChatConfigController.selected.authType}" required="true"
+                                     style="width: 200px;">
+                        <p:ajax update="emailSkillset requestInformationItems"/>
+                        <f:selectItems value="#{webChatConfigController.itemsAuthTypes}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="emailSkillset"
+                                   value="#{administratorController.translate('WebChatConfig_passwordReminder_emailSkillset')}"/>
+                    <p:selectOneMenu id="emailSkillset" value="#{webChatConfigController.selected.emailSkillSet}"
+                                     disabled="#{not webChatConfigController.authTypeAacc}" required="#{webChatConfigController.authTypeAacc}"
+                                     style="width: 200px;">
+                        <p:ajax />
+                        <f:selectItem itemLabel="#{administratorController.translate('selectItem_notChoosen')}"
+                                      itemValue="" itemDisabled="true"/>
+                        <f:selectItems value="#{webChatConfigController.itemsAllEmailSkillsets}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="contactPriority"
+                                   value="#{administratorController.translate('WebChatConfig_priority')}"/>
+                    <p:selectOneMenu id="contactPriority" value="#{webChatConfigController.selected.priority}"
+                                     required="true" style="width: 200px;">
+                        <f:selectItems value="#{webChatConfigController.itemsContactPriorities}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="workTimeRange"
+                                   value="#{administratorController.translate('WebChatConfig_workTimeRange')}"/>
+                    <p:selectOneMenu id="workTimeRange" value="#{webChatConfigController.selected.workTimeRange}"
+                                     required="true" style="width: 200px;" converter="workTimeRangeConverter">
+                        <f:selectItems value="#{workTimeRangeController.itemsAvailableSelect}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="notWorkTimeMessage"
+                                   value="#{administratorController.translate('WebChatConfig_notWorkTimeMessage')}"/>
+                    <p:inputTextarea id="notWorkTimeMessage"
+                                 value="#{webChatConfigController.selected.notWorkTimeMessage}"
+                                 style="width: 99%;" required="true"/>
+
+                    <h:outputText value="#{administratorController.translate('style_theme')} *"/>
+                    <p:themeSwitcher id="statefulSwitcher1"
+                                     value="#{webChatConfigController.selected.styleTheme}"
+                                     style="width:165px" effect="fade">
+                        <f:selectItem itemLabel="#{administratorController.translate('selectItem_notChoosen')}"
+                                      itemValue=""/>
+                        <f:selectItems value="#{administratorController.itemsStyleThemesSelect}"/>
+                    </p:themeSwitcher>
+
+                    <p:outputLabel for="customCss"
+                                   value="#{administratorController.translate('WebChatConfig_customCss')}"/>
+                    <p:inputTextarea id="customCss" value="#{webChatConfigController.selected.css}" autoResize="true"
+                                     style="width: 99%;"/>
+
+                    <p:outputLabel for="notifyCustomerOnAgentWriting"
+                                   value="#{administratorController.translate('WebChatConfig_notifyCustomerOnAgentWriting')}"/>
+                    <p:selectBooleanCheckbox id="notifyCustomerOnAgentWriting"
+                                             value="#{webChatConfigController.selected.notifyCustomerOnAgentWriting}"/>
+
+                    <p:outputLabel for="notifyAgentOnCustomertWriting"
+                                   value="#{administratorController.translate('WebChatConfig_notifyAgentOnCustomertWriting')}"/>
+                    <p:selectBooleanCheckbox id="notifyAgentOnCustomertWriting"
+                                             value="#{webChatConfigController.selected.notifyAgentOnCustomerWriting}"/>
+
+                    <p:outputLabel for="customerDefaultLabel"
+                                   value="#{administratorController.translate('WebChatConfig_customerDefaultLabel')}"/>
+                    <p:inputText id="customerDefaultLabel"
+                                 value="#{webChatConfigController.selected.customerDefaultLabel}" required="true"/>
+
+                    <p:outputLabel for="messageOnSessionStart"
+                                 value="#{administratorController.translate('WebChatConfig_messageOnSessionStart')}"/>
+                    <p:inputTextarea id="messageOnSessionStart"
+                                 value="#{webChatConfigController.selected.messageOnSessionStart}"
+                                 style="width: 99%;"/>
+
+                    <p:outputLabel for="messageOnSessionEnd"
+                                   value="#{administratorController.translate('WebChatConfig_messageOnSessionEnd')}"/>
+                    <p:inputTextarea id="messageOnSessionEnd"
+                                 value="#{webChatConfigController.selected.messageOnSessionEnd}"
+                                 style="width: 99%;"/>
+
+                    <p:outputLabel for="showRequestInformation"
+                                   value="#{administratorController.translate('WebChatConfig_showRequestInformation')}"/>
+                    <p:selectBooleanCheckbox id="showRequestInformation"
+                                             value="#{webChatConfigController.selected.showRequestInformation}">
+                        <p:ajax update="requestInformationItems"/>
+                    </p:selectBooleanCheckbox>
+                </p:panelGrid>
+
+
+                <p:outputPanel id="requestInformationItems">
+                    <p:panelGrid columns="2" styleClass="twoColumns"
+                                 rendered="#{webChatConfigController.selected.showRequestInformation}">
+
+                        <p:outputLabel for="requestName"
+                                       value="#{administratorController.translate('WebChatConfig_requestName')}"/>
+                        <p:selectBooleanCheckbox id="requestName"
+                                                 value="#{webChatConfigController.selected.requestName}">
+                            <p:ajax update="requireName"/>
+                        </p:selectBooleanCheckbox>
+
+                        <p:outputLabel for="requireName"
+                                       value="#{administratorController.translate('WebChatConfig_requireName')}"/>
+                        <p:selectBooleanCheckbox id="requireName"
+                                                 value="#{webChatConfigController.selected.requireName}"
+                                                 disabled="#{not webChatConfigController.selected.requestName}">
+                            <p:ajax/>
+                        </p:selectBooleanCheckbox>
+
+                        <p:outputLabel for="requestEmail"
+                                       value="#{administratorController.translate('WebChatConfig_requestEmail')}"/>
+                        <p:selectBooleanCheckbox id="requestEmail"
+                                                 value="#{webChatConfigController.selected.requestEmail}"
+                                                 disabled="#{webChatConfigController.authTypeAacc}">
+                            <p:ajax update="requireEmail"/>
+                        </p:selectBooleanCheckbox>
+
+                        <p:outputLabel for="requireEmail"
+                                       value="#{administratorController.translate('WebChatConfig_requireEmail')}"/>
+                        <p:selectBooleanCheckbox id="requireEmail"
+                                                 value="#{webChatConfigController.selected.requireEmail}"
+                                                 disabled="#{webChatConfigController.authTypeAacc or not webChatConfigController.selected.requestEmail}">
+                            <p:ajax/>
+                        </p:selectBooleanCheckbox>
+
+                        <p:outputLabel for="requestPhone"
+                                       value="#{administratorController.translate('WebChatConfig_requestPhone')}"/>
+                        <p:selectBooleanCheckbox id="requestPhone"
+                                                 value="#{webChatConfigController.selected.requestPhone}">
+                            <p:ajax update="requirePhone"/>
+                        </p:selectBooleanCheckbox>
+
+                        <p:outputLabel for="requirePhone"
+                                       value="#{administratorController.translate('WebChatConfig_requirePhone')}"/>
+                        <p:selectBooleanCheckbox id="requirePhone"
+                                                 value="#{webChatConfigController.selected.requirePhone}"
+                                                 disabled="#{not webChatConfigController.selected.requestPhone}">
+                            <p:ajax/>
+                        </p:selectBooleanCheckbox>
+
+                        <p:outputLabel for="subjectType"
+                                       value="#{administratorController.translate('WebChatConfig_subjectType')}"/>
+                        <p:selectOneMenu id="subjectType" value="#{webChatConfigController.selected.subjectType}"
+                                         required="true" style="width: 200px;">
+                            <f:selectItems value="#{webChatConfigController.itemsSubjectTypes}"/>
+                            <p:ajax update="webChatConfigSubjectList subjectRequired"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel for="subjectRequired"
+                                       value="#{administratorController.translate('WebChatConfig_subjectRequired')}"/>
+                        <p:selectBooleanCheckbox id="subjectRequired"
+                                                 value="#{webChatConfigController.selected.subjectRequired}"
+                                                 disabled="#{webChatConfigController.selected.subjectType.toString() eq 'HIDDEN'}">
+                            <p:ajax/>
+                        </p:selectBooleanCheckbox>
+                    </p:panelGrid>
+                    <p:outputPanel id="webChatConfigSubjectList">
+                        <p:dataTable id="webChatConfig_subjectsListEnteries"
+                                     value="#{webChatConfigController.selected.subjectsList}" var="item"
+                                     rowIndexVar="ind"
+                                     style="text-align: center;"
+                                     emptyMessage="#{administratorController.translate('no_recors')}"
+                                     rendered="#{webChatConfigController.selected.showRequestInformation and webChatConfigController.selectedSubjectTypeFromList}">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText
+                                            value="#{administratorController.translate('WebChatConfig_subjectList')}"/>
+                                </f:facet>
+                                <p:inputText value="#{webChatConfigController.selected.subjectsList[ind]}"
+                                             style="width: 95%;">
+                                    <p:ajax/>
+                                </p:inputText>
+                            </p:column>
+                            <p:column style="width: 60px;">
+                                <p:commandButton actionListener="#{webChatConfigController.removeSubjectFromList(ind)}"
+                                                 update="@parent :webChatConfigForm:webChatConfig_subjectsListEnteries"
+                                                 icon="ui-icon-trash"
+                                                 immediate="true" ajax="false"
+                                                 title="#{administratorController.translate('WebChatConfig_removeEntery')}"/>
+                            </p:column>
+                        </p:dataTable>
+                        <p:commandButton id="addSubjectButton"
+                                         actionListener="#{webChatConfigController.addSubjectToList}"
+                                         style="position: absolute; right: 10px;" ajax="true"
+                                         update=":webChatConfigForm:webChatConfig_subjectsListEnteries"
+                                         icon="ui-icon-plus"
+                                         immediate="true"
+                                         value="#{administratorController.translate('WebChatConfig_addEntery')}"
+                                         title="#{administratorController.translate('WebChatConfig_addEntery')}"
+                                         rendered="#{webChatConfigController.selected.showRequestInformation and webChatConfigController.selectedSubjectTypeFromList}" />
+                    </p:outputPanel>
+                </p:outputPanel>
+                <br/>
+                <p:commandButton ajax="false" action="#{webChatConfigController.update}"
+                                 value="#{administratorController.translate('Save')}"/>
+                <p:commandButton ajax="false" action="#{webChatConfigController.prepareList}"
+                                 value="#{administratorController.translate('Cancel')}" immediate="true"/>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

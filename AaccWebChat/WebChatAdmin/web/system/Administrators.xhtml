@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/template.xhtml">
+    <ui:define name="title">
+        <h:outputText value="#{administratorController.translate('system_accounts')}"></h:outputText>
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="accountList">
+            <br/>
+            <p:commandButton actionListener="#{administratorController.prepareCreate}" icon="ui-icon-plus"
+                             oncomplete="editAccount.show()" update=":editAccountForm"
+                             title="#{administratorController.translate('Create')}"/>
+            <p:commandButton action="#{administratorController.prepareList}" icon="ui-icon-refresh" ajax="false"
+                             title="#{administratorController.translate('refresh')}"/>
+            <br/>
+            <p:dataTable value="#{administratorController.lazyModel}" var="item"
+                         emptyMessage="#{administratorController.translate('no_recors')}"
+                         paginator="true" paginatorAlwaysVisible="false" rows="20" sortBy="#{item.modDate}"
+                         sortOrder="descending" lazy="true">
+                <p:column headerText="#{administratorController.translate('userName')}" sortBy="#{item.userName}">
+                    <h:outputText value="#{item.userName}"/>
+                </p:column>
+                <p:column headerText="#{administratorController.translate('modDate')}" sortBy="#{item.modDate}">
+                    <h:outputText value="#{item.modDate}"/>
+                </p:column>
+                <p:column styleClass="editDeleteActions">
+                    <f:facet name="header">
+                        <h:outputText value="&nbsp; #{administratorController.translate('Actions')}"/>
+                    </f:facet>
+                    <p:commandButton actionListener="#{administratorController.prepareEdit}"
+                                     oncomplete="editAccount.show()" update=":editAccountForm" icon="ui-icon-pencil"
+                                     title="#{administratorController.translate('Edit')}"/>
+                    <p:commandButton action="#{administratorController.prepareDestroy}" icon="ui-icon-trash"
+                                     oncomplete="confirmDelete.show()" update=":confirmDeleteDialog"
+                                     title="#{administratorController.translate('Delete')}"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+    <ui:define name="notLayout">
+        <p:dialog modal="true" header="#{administratorController.translate('edit_account')}" widgetVar="editAccount">
+            <h:form id="editAccountForm">
+                <p:messages showDetail="true" autoUpdate="true"/>
+                <h:panelGrid columns="2" rendered="#{administratorController.selected!=null}">
+                    <p:outputLabel for="userName" value="#{administratorController.translate('login')}"/>
+                    <p:inputText id="userName" value="#{administratorController.selected.userName}" required="true"
+                                 readonly="#{administratorController.selected.userName eq 'artem'}"/>
+
+                    <p:outputLabel for="pass" value="#{administratorController.translate('password')}"/>
+                    <p:password id="pass" value="#{administratorController.selected.password}" required="true"
+                                feedback="true" inline="true"
+                                weakLabel="#{administratorController.translate('weak')}" match="repeatPass"
+                                strongLabel="#{administratorController.translate('strong')}"/>
+
+                    <p:outputLabel for="repeatPass" value="#{administratorController.translate('repeat_password')}"/>
+                    <p:password id="repeatPass" value="#{administratorController.selected.password}" required="true"
+                                feedback="false"
+                                weakLabel="#{administratorController.translate('weak')}"
+                                strongLabel="#{administratorController.translate('strong')}"/>
+
+                    <h:outputText value=""/>
+                    <p:commandButton actionListener="#{administratorController.updateSelected}"
+                                     update=":editAccountForm" value="#{administratorController.translate('save')}"/>
+                </h:panelGrid>
+            </h:form>
+            <p:ajax event="close" update=":accountList"/>
+        </p:dialog>
+        <p:confirmDialog
+                message="#{administratorController.translate('List_Delete_areYouShure')} '#{administratorController.selected.userName}' ? "
+                appendToBody="true" id="confirmDeleteDialog"
+                header="#{administratorController.translate('ListAccount_Delete_confirmHeader')}" closable="true"
+                severity="alert" widgetVar="confirmDelete">
+            <h:form>
+                <p:commandButton value="#{administratorController.translate('Yes')}"
+                                 actionListener="#{administratorController.destroy}"
+                                 update=":accountList :main:messages" onclick="confirmDelete.hide()"/>
+                <p:commandButton value="#{administratorController.translate('No')}" onclick="confirmDelete.hide()"
+                                 type="button"/>
+            </h:form>
+        </p:confirmDialog>
+    </ui:define>
+</ui:composition>
+
+</html>

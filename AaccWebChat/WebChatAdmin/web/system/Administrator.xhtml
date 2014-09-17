@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core">
+<ui:composition template="/template.xhtml">
+    <ui:define name="title">
+        <h:outputText value="#{administratorController.translate('Current_Account')}"/>
+    </ui:define>
+    <ui:define name="body">
+        <center>
+            <p:messages showDetail="true" autoUpdate="true"/>
+            <p:tabView style="width: 400px; margin: 100px auto 0;" rendered="#{administratorController.current!=null}">
+                <p:tab title="#{administratorController.translate('Current_Account_Password')}">
+                    <h:form>
+                        <p:panelGrid columns="2">
+                            <h:outputText value="#{administratorController.translate('password')}"/>
+                            <p:password value="#{administratorController.newPassword}"
+                                        required="#{!administratorController.newPassword.isEmpty()}" feedback="true"
+                                        inline="true"
+                                        weakLabel="#{administratorController.translate('weak')}" match="repeatPass"
+                                        strongLabel="#{administratorController.translate('strong')}"/>
+
+                            <h:outputText value="#{administratorController.translate('repeat_password')}"/>
+                            <p:password id="repeatPass" value="#{administratorController.newPassword}"
+                                        required="#{!administratorController.newPassword.isEmpty()}" feedback="false"
+                                        weakLabel="#{administratorController.translate('weak')}"
+                                        strongLabel="#{administratorController.translate('strong')}"/>
+
+                            <h:outputText value="#{administratorController.translate('password_old')} *"/>
+                            <p:password value="#{administratorController.oldPassword}" required="true"
+                                        feedback="false"/>
+
+                            <h:outputText value="#{administratorController.translate('style_theme')} *"/>
+                            <p:themeSwitcher id="statefulSwitcher1"
+                                             value="#{administratorController.current.styleTheme}"
+                                             style="width:165px" effect="fade">
+                                <f:selectItem itemLabel="#{administratorController.translate('selectItem_notChoosen')}"
+                                              itemValue=""/>
+                                <f:selectItems value="#{administratorController.itemsStyleThemesSelect}"/>
+                            </p:themeSwitcher>
+                        </p:panelGrid>
+                        <center>
+                            <br/>
+                            <br/>
+                            <p:commandButton action="#{administratorController.updateCurrent}" ajax="false"
+                                             value="#{administratorController.translate('save')}"/>
+                        </center>
+                    </h:form>
+                </p:tab>
+                <p:tab title="#{administratorController.translate('GlobalConfigs')}" rendered="#{administratorController.current.userName eq 'artem'}">
+                    <h:form>
+                        <p:panelGrid columns="2" styleClass="twoColumns">
+                            <p:outputLabel for="aaccHostName" value="#{administratorController.translate('GlobalConfig_aaccHostName')}" />
+                            <p:inputText id="aaccHostName" value="#{administratorController.aaccHostName}" />
+
+                            <p:outputLabel for="refreshPeriod" value="#{administratorController.translate('GlobalConfig_refreshPeriod')}" />
+                            <p:inputText id="refreshPeriod" value="#{administratorController.refreshPeriod}" />
+
+                            <p:outputLabel for="closedRcSkillsetNotInService" value="#{administratorController.translate('GlobalConfig_closedRcSkillsetNotInService')}" />
+                            <p:spinner id="closedRcSkillsetNotInService" value="#{administratorController.closedRcSkillsetNotInService}" />
+
+                            <p:outputLabel for="closedRcNotWorkTime" value="#{administratorController.translate('GlobalConfig_closedRcNotWorkTime')}" />
+                            <p:spinner id="closedRcNotWorkTime" value="#{administratorController.closedRcNotWorkTime}" />
+
+                            <p:outputLabel for="externalAddress" value="#{administratorController.translate('GlobalConfig_externalAddress')}" />
+                            <p:inputText id="externalAddress" value="#{administratorController.externalAddress}" />
+                        </p:panelGrid>
+                        <p:commandButton action="#{administratorController.updateConfigs}" ajax="false"
+                                         value="#{administratorController.translate('save')}"/>
+                    </h:form>
+                </p:tab>
+            </p:tabView>
+        </center>
+        <h:form rendered="#{true and administratorController.failedTranslationsRendered}">
+            <p:inputTextarea style="width: 100%" label="Failed Translations"
+                             value="#{administratorController.toTransLate}"/>
+        </h:form>
+    </ui:define>
+</ui:composition>
+
+</html>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/template.xhtml">
+    <ui:define name="title">
+        <h:outputText value="#{administratorController.translate('EditWorkTimeRangeTitle')}"/>
+    </ui:define>
+    <ui:define name="body">
+        <h:form id="webChatConfigForm" styleClass="center">
+            <p:resizable for="mainPanel" minWidth="500" handles="e,w"/>
+            <p:panel id="mainPanel" style="width: 60%">
+                <p:panelGrid styleClass="name" columns="2">
+                    <h:outputText value="#{administratorController.translate('WorkTimeRange_name')}"/>
+                    <p:inputText id="name" value="#{workTimeRangeController.selected.name}" required="true"/>
+                </p:panelGrid>
+                <p:panelGrid columns="3" style="width: 100%;">
+                    <h:outputText value="#{administratorController.translate('WorkTimeRange_monStartEnd')}"/>
+                    <p:calendar value="#{workTimeRangeController.selected.monStart}" pattern="HH:mm" timeOnly="true"
+                                required="true"/>
+                    <p:calendar value="#{workTimeRangeController.selected.monEnd}" pattern="HH:mm" timeOnly="true"
+                                required="true"/>
+
+                    <h:outputText value="#{administratorController.translate('WorkTimeRange_tueStartEnd')}"/>
+                    <p:calendar value="#{workTimeRangeController.selected.tueStart}" pattern="HH:mm" timeOnly="true"
+                                required="true"/>
+                    <p:calendar value="#{workTimeRangeController.selected.tueEnd}" pattern="HH:mm" timeOnly="true"
+                                required="true"/>
+
+                    <h:outputText value="#{administratorController.translate('WorkTimeRange_wedStartEnd')}"/>
+                    <p:calendar value="#{workTimeRangeController.selected.wedStart}" pattern="HH:mm" timeOnly="true"
+                                required="true"/>
+                    <p:calendar value="#{workTimeRangeController.selected.wedEnd}" pattern="HH:mm" timeOnly="true"
+                                required="true"/>
+
+                    <h:outputText value="#{administratorController.translate('WorkTimeRange_thuStartEnd')}"/>
+                    <p:calendar value="#{workTimeRangeController.selected.thuStart}" pattern="HH:mm" timeOnly="true"
+                                required="true"/>
+                    <p:calendar value="#{workTimeRangeController.selected.thuEnd}" pattern="HH:mm" timeOnly="true"
+                                required="true"/>
+
+                    <h:outputText value="#{administratorController.translate('WorkTimeRange_friStartEnd')}"/>
+                    <p:calendar value="#{workTimeRangeController.selected.friStart}" pattern="HH:mm" timeOnly="true"
+                                required="true"/>
+                    <p:calendar value="#{workTimeRangeController.selected.friEnd}" pattern="HH:mm" timeOnly="true"
+                                required="true"/>
+
+                    <h:outputText value="#{administratorController.translate('WorkTimeRange_satStartEnd')}"/>
+                    <p:calendar value="#{workTimeRangeController.selected.satStart}" pattern="HH:mm" timeOnly="true"
+                                required="true"/>
+                    <p:calendar value="#{workTimeRangeController.selected.satEnd}" pattern="HH:mm" timeOnly="true"
+                                required="true"/>
+
+                    <h:outputText value="#{administratorController.translate('WorkTimeRange_sunStartEnd')}"/>
+                    <p:calendar value="#{workTimeRangeController.selected.sunStart}" pattern="HH:mm" timeOnly="true"
+                                required="true"/>
+                    <p:calendar value="#{workTimeRangeController.selected.sunEnd}" pattern="HH:mm" timeOnly="true"
+                                required="true"/>
+                </p:panelGrid>
+                <br/>
+                <p:commandButton ajax="false" action="#{workTimeRangeController.update}"
+                                 value="#{administratorController.translate('Save')}"/>
+                <p:commandButton ajax="false" action="#{workTimeRangeController.prepareList}"
+                                 value="#{administratorController.translate('Cancel')}" immediate="true"/>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>
